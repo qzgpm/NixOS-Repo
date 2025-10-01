@@ -1,0 +1,50 @@
+{ config, pkgs, ... }:
+
+{
+  home.packages = with pkgs; [
+    neovim
+    wget
+    git
+    dmenu
+    st
+    dwmblocks
+    fastfetch
+    eza
+    zsh-fast-syntax-highlighting
+    xclip
+    lf
+    ueberzugpp
+    bat
+    librewolf-bin
+    dunst
+    libnotify
+    pywal
+    xwallpaper
+    xdotool
+    xorg.xrandr
+    xorg.xsetroot
+    feh
+    unclutter
+    fzf
+    mpv
+    mpd
+    mpc
+    brightnessctl
+    btop
+    zathura
+    slock
+    nsxiv
+    bc
+    dust
+    mediainfo
+    poppler
+    qbittorrent
+    sc-im
+    tealdeer
+    thunderbird
+    gnome-epub-thumbnailer
+    tor-browser
+    scrot
+    dosbox
+  ];
+}

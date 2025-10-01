@@ -1,0 +1,76 @@
+#!/bin/sh
+
+#nvim for vim
+[ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
+
+#Use $XINITRC variable if file exists.
+[ -f "$XINITRC" ] && alias startx='startx $XINITRC'
+
+#sudo is too hard to type
+for command in mount umount sv nixos-rebuild updatedb su shutdown poweroff reboot ; do
+	alias $command="sudo $command"
+done; unset command
+
+se() {
+	choice="$(find ~/.local/bin -mindepth 1 -printf '%P\n' | fzf)"
+	[ -f "$HOME/.local/bin/$choice" ] && $EDITOR "$HOME/.local/bin/$choice"
+	}
+
+# I dont want to put colons
+commitFunction() {
+    git commit -m "$*"
+}
+
+#push is so hard
+pushFunction() {
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "$branch" ]; then
+      git push -u origin "$branch"
+    else
+      echo "Not a git repository"
+    fi
+}
+
+#pull is so hard
+pullFunction() {
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "$branch" ]; then
+      git pull origin "$branch"
+    else
+      echo "Not a git repository"
+    fi
+}
+
+# Verbosity and settings that you pretty much just always are going to want.
+alias \
+  cp="cp -iv" \
+  mv="mv -iv" \
+  ln="ln -i" \
+  rm="rm -vI" \
+  bc="bc -ql" \
+  ka="killall" \
+  du="dust -d 2 --reverse" \
+  python="python -q" \
+  less="bat --paging=always" \
+  mirrorsync="sudo reflector --country India,US,DE,FR,SG,GB --latest 30 --protocol https --ipv6 --sort rate --save /etc/pacman.d/mirrorlist"
+
+# Colorize commands when possible.
+alias \
+  ls="eza -h --icons --group-directories-first --color=always" \
+  grep="grep -i --color=auto" \
+  diff="diff --color=auto" \
+  ip="ip -color=auto" \
+  cat="bat -pp"
+
+
+alias \
+  lf="lfub" \
+  magit="nvim -c MagitOnly" \
+  ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
+
+#git alias
+alias \
+   gadd="git add ." \
+   gcommit="commitFunction" \
+   gpush="pushFunction" \
+   gpull="pullFunction"

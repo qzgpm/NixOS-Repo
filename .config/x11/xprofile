@@ -1,0 +1,20 @@
+#!/bin/sh
+
+#Display shinanigans
+xrandr --dpi 96
+setbg &
+
+#swap escape and capslock
+setxkbmap -option caps:swapescape
+
+#Autostart
+picom &
+dwmblocks &
+dunst &
+unclutter &
+udiskie &
+pipewire &
+mpd &
+
+#xrdb wait
+[ -n "$xrdbpid" ] && wait "$xrdbpid"
