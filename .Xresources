@@ -1,0 +1,14 @@
+! Transparancy
+*.alpha:		0.8
+
+! Font
+*.font:monospace:size=12:antialias=true:autohint=true
+*.fonts:monospace:size=20
+
+! dwm colors
+dwm.normfgcolor:#c2c5c6
+dwm.normbgcolor:#0d1a1e
+dwm.normbordercolor:#5c6d70
+dwm.selfgcolor:#c2c5c6
+dwm.selbgcolor:#8D8777
+dwm.selbordercolor:#c2c5c6
