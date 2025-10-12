@@ -11,5 +11,6 @@
     file
     unzip
     p7zip
+    unrar-free
   ];
 }
