@@ -227,14 +227,63 @@ static const char *dmenucmd[] = {
 };
 static const char *termcmd[]  = { "st", NULL };
 
-/* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
-static const StatusCmd statuscmds[] = {
-	{ "notify-send Volume$BUTTON", 1 },
-	{ "notify-send CPU$BUTTON", 2 },
-	{ "notify-send Battery$BUTTON", 3 },
+/* This defines the name of the executable that handles the bar (used for signalling purposes) */
+#define STATUSBAR "dwmblocks"
+
+/*
+* Xresources preferences to load at startup.
+*
+*     Name                      Type       Address
+*    ------------------------------------------------
+*     "nmaster"                 INTEGER    &nmaster
+*     "mfact"                   FLOAT      &mfact
+*     "color1"                  STRING     &color1
+*
+* In the Xresources file setting resources shoud be prefixed with "dwm.", e.g.
+*
+*    dwm.nmaster: 1
+*    dwm.mfact: 0.50
+*    dwm.color1: #FA6EFA
+*
+* Note that the const qualifier must be removed from the variables if you plan on
+* overriding them with values from Xresources. While resources can be reloaded
+* using the xrdb function some changes may only take effect following a restart.
+*/
+ResourcePref resources[] = {
+	/* Resource name            Type       Address                */
+	{ "normfgcolor",            STRING,    &normfgcolor },
+	{ "normbgcolor",            STRING,    &normbgcolor },
+	{ "normbordercolor",        STRING,    &normbordercolor },
+	{ "normfloatcolor",         STRING,    &normfloatcolor },
+	{ "selfgcolor",             STRING,    &selfgcolor },
+	{ "selbgcolor",             STRING,    &selbgcolor },
+	{ "selbordercolor",         STRING,    &selbordercolor },
+	{ "selfloatcolor",          STRING,    &selfloatcolor },
+	{ "titlenormfgcolor",       STRING,    &titlenormfgcolor },
+	{ "titlenormbgcolor",       STRING,    &titlenormbgcolor },
+	{ "titlenormbordercolor",   STRING,    &titlenormbordercolor },
+	{ "titlenormfloatcolor",    STRING,    &titlenormfloatcolor },
+	{ "titleselfgcolor",        STRING,    &titleselfgcolor },
+	{ "titleselbgcolor",        STRING,    &titleselbgcolor },
+	{ "titleselbordercolor",    STRING,    &titleselbordercolor },
+	{ "titleselfloatcolor",     STRING,    &titleselfloatcolor },
+	{ "tagsnormfgcolor",        STRING,    &tagsnormfgcolor },
+	{ "tagsnormbgcolor",        STRING,    &tagsnormbgcolor },
+	{ "tagsnormbordercolor",    STRING,    &tagsnormbordercolor },
+	{ "tagsnormfloatcolor",     STRING,    &tagsnormfloatcolor },
+	{ "tagsselfgcolor",         STRING,    &tagsselfgcolor },
+	{ "tagsselbgcolor",         STRING,    &tagsselbgcolor },
+	{ "tagsselbordercolor",     STRING,    &tagsselbordercolor },
+	{ "tagsselfloatcolor",      STRING,    &tagsselfloatcolor },
+	{ "hidnormfgcolor",         STRING,    &hidnormfgcolor },
+	{ "hidnormbgcolor",         STRING,    &hidnormbgcolor },
+	{ "hidselfgcolor",          STRING,    &hidselfgcolor },
+	{ "hidselbgcolor",          STRING,    &hidselbgcolor },
+	{ "urgfgcolor",             STRING,    &urgfgcolor },
+	{ "urgbgcolor",             STRING,    &urgbgcolor },
+	{ "urgbordercolor",         STRING,    &urgbordercolor },
+	{ "urgfloatcolor",          STRING,    &urgfloatcolor },
 };
-/* test the above with: xsetroot -name "$(printf '\x01Volume |\x02 CPU |\x03 Battery')" */
-static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
 
 #include <X11/XF86keysym.h>
 
@@ -350,9 +399,9 @@ static const Button buttons[] = {
 	{ ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,                   Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,                   Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,                   Button1,        spawn,          {.v = statuscmd } },
-	{ ClkStatusText,        0,                   Button2,        spawn,          {.v = statuscmd } },
-	{ ClkStatusText,        0,                   Button3,        spawn,          {.v = statuscmd } },
+	{ ClkStatusText,        0,                   Button1,        sigstatusbar,   {.i = 1 } },
+	{ ClkStatusText,        0,                   Button2,        sigstatusbar,   {.i = 2 } },
+	{ ClkStatusText,        0,                   Button3,        sigstatusbar,   {.i = 3 } },
 	{ ClkClientWin,         MODKEY,              Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },

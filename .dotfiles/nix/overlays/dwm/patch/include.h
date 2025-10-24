@@ -3,6 +3,7 @@
 #include "bar_tagicons.h"
 #include "bar.h"
 
+#include "bar_dwmblocks.h"
 #include "bar_ltsymbol.h"
 #include "bar_status.h"
 #include "bar_statuscmd.h"
@@ -11,7 +12,10 @@
 
 /* Other patches */
 #include "alwaysontop.h"
+#include "aspectresize.h"
 #include "attachx.h"
+#include "recttoclient.h"
+#include "banish.h"
 #include "restartsig.h"
 #include "scratchpad.h"
 #include "seamless_restart.h"
@@ -23,7 +27,8 @@
 #include "swallow.h"
 #include "togglefullscreen.h"
 #include "vanitygaps.h"
-#include "xrdb.h"
+#include "warp.h"
+#include "xresources.h"
 /* Layouts */
 #include "layout_monocle.h"
 #include "layout_tile.h"

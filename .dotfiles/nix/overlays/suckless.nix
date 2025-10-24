@@ -7,6 +7,12 @@ let
     super.xorg.libXinerama
     super.xorg.libxcb
     super.xorg.xcbutil
+    super.xorg.xcbutilimage
+    super.xorg.xcbutilkeysyms
+    super.xorg.xcbutilwm
+    super.xorg.libXfixes
+    super.xorg.xorgproto
+    super.xorg.libXi
   ];
 
   commonFontDeps = [
@@ -76,20 +82,9 @@ in {
     name = "dwm";
     src = ./dwm;
     bin = "dwm";
-    deps = commonX11Deps;
+    deps = commonX11Deps ++ commonFontDeps;
     desc = "Dynamic window manager (custom build)";
   };
-
-#  dmenu = mkSuckless {
-#    name = "dmenu";
-#    src = ./dmenu;
-#    bin = "dmenu";
-#    deps = commonX11Deps ++ commonFontDeps;
-#    desc = "Dynamic menu (custom build)";
-#    extraInstall = ''
-#      cp -v dmenu_path dmenu_run $out/bin/ 2>/dev/null || true
-#    '';
-#  };
 
   st = mkSuckless {
     name = "st";
@@ -108,7 +103,19 @@ in {
     name = "dwmblocks";
     src = ./dwmblocks;
     bin = "dwmblocks";
-    deps = [ super.xorg.libX11 ];
+    deps = commonX11Deps ++ commonFontDeps;
     desc = "Modular status bar for dwm (custom build)";
   };
+
+# Uncomment and configure dmenu if needed
+#  dmenu = mkSuckless {
+#    name = "dmenu";
+#    src = ./dmenu;
+#    bin = "dmenu";
+#    deps = commonX11Deps ++ commonFontDeps;
+#    desc = "Dynamic menu (custom build)";
+#    extraInstall = ''
+#      cp -v dmenu_path dmenu_run $out/bin/ 2>/dev/null || true
+#    '';
+#  };
 }

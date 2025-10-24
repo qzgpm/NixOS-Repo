@@ -1,7 +1,3 @@
-static const char statusexport[] = "export BUTTON=-;";
-static int statuscmdn;
-static char lastbutton[] = "-";
-
 int
 click_statuscmd(Bar *bar, Arg *arg, BarArg *a)
 {
@@ -14,7 +10,7 @@ click_statuscmd_text(Arg *arg, int rel_x, char *text)
 	int i = -1;
 	int x = 0;
 	char ch;
-	statuscmdn = 0;
+	statussig = -1;
 	while (text[++i]) {
 		if ((unsigned char)text[i] < ' ') {
 			ch = text[i];
@@ -23,12 +19,13 @@ click_statuscmd_text(Arg *arg, int rel_x, char *text)
 			text[i] = ch;
 			text += i+1;
 			i = -1;
-			if (x >= rel_x)
+			if (x >= rel_x && statussig != -1)
 				break;
-			if (ch <= LENGTH(statuscmds))
-				statuscmdn = ch;
+			statussig = ch;
 		}
 	}
+	if (statussig == -1)
+		statussig = 0;
 	return ClkStatusText;
 }
 
