@@ -2,49 +2,94 @@
 
 {
   home.packages = with pkgs; [
-    neovim
-    wget
+
+    # ────────────────────────────────
+    # 🧠 Core System & Shell Tools
+    # ────────────────────────────────
     git
-    dmenu
-    st
-    dwmblocks
-    fastfetch
+    wget
+    bc
+    fzf
     eza
-    zsh-fast-syntax-highlighting
-    xclip
-    lf
-    ueberzugpp
     bat
-    librewolf-bin
-    dunst
-    libnotify
-    pywal
+    dust
+    tealdeer
+    zsh-fast-syntax-highlighting
+    unclutter
+
+    # ────────────────────────────────
+    # 🏗️ Suckless Ecosystem
+    # (lightweight + minimal setup)
+    # ────────────────────────────────
+    st          # terminal
+    dmenu       # launcher
+    dwmblocks   # status bar
+    slock       # screen locker
+
+    # ────────────────────────────────
+    # 🪟 X11 Environment Tools
+    # ────────────────────────────────
     xwallpaper
-    xdotool
     xorg.xrandr
     xorg.xsetroot
-    feh
-    unclutter
-    fzf
+    xdotool
+    brightnessctl
+
+    # ────────────────────────────────
+    # 🖼️ Visuals & Appearance
+    # ────────────────────────────────
+    pywal        # colorscheme generator
+    feh          # wallpaper + image viewer
+    nsxiv        # minimalist image viewer
+    scrot        # screenshots
+    xclip        # clipboard
+    dunst        # notifications
+    libnotify
+
+    # ────────────────────────────────
+    # 📂 File Management (lf setup)
+    # ────────────────────────────────
+    lf
+    ueberzugpp              # image previews
+    poppler                 # PDF previews
+    mediainfo               # media metadata
+    gnome-epub-thumbnailer  # epub thumbnails
+
+    # ────────────────────────────────
+    # 📄 Documents & Spreadsheets
+    # ────────────────────────────────
+    zathura    # PDF/document viewer
+    sc-im      # terminal spreadsheet
+
+    # ────────────────────────────────
+    # 🎵 Multimedia & Audio
+    # ────────────────────────────────
     mpv
     mpd
     mpc
-    brightnessctl
-    btop
-    zathura
-    slock
-    nsxiv
-    bc
-    dust
-    mediainfo
-    poppler
-    qbittorrent
-    sc-im
-    tealdeer
-    thunderbird
-    gnome-epub-thumbnailer
+
+    # ────────────────────────────────
+    # 🌐 Browsing & Communication
+    # ────────────────────────────────
+    librewolf-bin
+    qutebrowser
     tor-browser
-    scrot
+    thunderbird
+
+    # ────────────────────────────────
+    # 🧭 Networking & Torrents
+    # ────────────────────────────────
+    qbittorrent
+
+    # ────────────────────────────────
+    # 📊 System Info & Monitoring
+    # ────────────────────────────────
+    btop
+    fastfetch
+
+    # ────────────────────────────────
+    # 🎮 Misc / Legacy Tools
+    # ────────────────────────────────
     dosbox
   ];
 }
