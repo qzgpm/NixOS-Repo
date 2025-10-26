@@ -58,7 +58,7 @@ alias \
   du="dust -d 2 --reverse" \
   python="python -q" \
   less="bat --paging=always --plain" \
-  nixos-rebuild="nixos-rebuild --flake $HOME/.dotfiles#laptop"
+  nixos-rebuild="nixos-rebuild --flake ~/.dotfiles#laptop"
 
 # --- Colorized commands ---
 alias \
