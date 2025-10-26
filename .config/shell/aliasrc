@@ -1,84 +1,86 @@
-#!/bin/sh
+#!/bin/zsh
 
-# --- Editors ---
-# Prefer Neovim when available
+# ==============================
+# Editor setup
+# ==============================
 if command -v nvim >/dev/null 2>&1; then
-  alias \
-    vim="nvim" \
-    vimdiff="nvim -d"
+  alias vim="nvim"
+  alias vimdiff="nvim -d"
 fi
 
-# --- X session ---
-# Use custom XINITRC if it exists
+# ==============================
+# X session
+# ==============================
 [ -n "$XINITRC" ] && [ -f "$XINITRC" ] && alias startx="startx $XINITRC"
 
-# --- Sudo shortcuts ---
-for command in mount umount sv nixos-rebuild updatedb su shutdown poweroff reboot; do
-  alias "$command"="sudo $command"
+# ==============================
+# Sudo shortcuts
+# ==============================
+for cmd in mount umount sv updatedb su shutdown poweroff reboot; do
+  alias "$cmd"="sudo $cmd"
 done
-unset command
+unset cmd
 
-# --- Local script editor ---
+# ==============================
+# Local script editor
+# ==============================
 se() {
+  local choice
   choice="$(find ~/.local/bin -mindepth 1 -printf '%P\n' | fzf)"
   [ -f "$HOME/.local/bin/$choice" ] && "$EDITOR" "$HOME/.local/bin/$choice"
 }
 
-# --- Git helpers ---
-commitFunction() {
-  git commit -m "$*"
-}
-
-pushFunction() {
+# ==============================
+# Git helpers (functions instead of aliases)
+# ==============================
+gadd() { git add .; }
+gcommit() { git commit -m "$*"; }
+gpush() {
+  local branch
   branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-  if [ -n "$branch" ]; then
-    git push -u origin "$branch"
-  else
-    echo "Not a git repository"
-  fi
+  [ -n "$branch" ] && git push -u origin "$branch" || echo "Not a git repository"
 }
-
-pullFunction() {
+gpull() {
+  local branch
   branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-  if [ -n "$branch" ]; then
-    git pull origin "$branch"
-  else
-    echo "Not a git repository"
-  fi
+  [ -n "$branch" ] && git pull origin "$branch" || echo "Not a git repository"
 }
 
-# --- Verbosity and defaults ---
-alias \
-  cp="cp -iv" \
-  mv="mv -iv" \
-  ln="ln -i" \
-  rm="rm -vI" \
-  bc="bc -ql" \
-  ka="killall" \
-  du="dust -d 2 --reverse" \
-  python="python -q" \
-  less="bat --paging=always --plain" \
-  nixos-rebuild="nixos-rebuild --flake ~/.dotfiles#laptop"
+# ==============================
+# Verbose and default aliases
+# ==============================
+alias cp="cp -iv"
+alias mv="mv -iv"
+alias ln="ln -i"
+alias rm="rm -vI"
+alias bc="bc -ql"
+alias ka="killall"
+alias du="dust -d 2 --reverse"
+alias python="python -q"
+alias less="bat --paging=always --plain"
 
-# --- Colorized commands ---
-alias \
-  ls="eza -h --icons --group-directories-first --color=always" \
-  grep="grep -i --color=auto" \
-  diff="diff --color=auto" \
-  ip="ip -color=auto" \
-  cat="bat -pp"
+# ==============================
+# nixos-rebuild wrapper
+# ==============================
+nixos-rebuild() {
+  sudo command nixos-rebuild --flake "$HOME/.dotfiles#laptop" "$@"
+}
 
-# --- Misc shortcuts ---
-alias \
-  lf="lfub" \
-  magit="nvim -c MagitOnly" \
-  ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; \
-       source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc ; \
-       source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
+# ==============================
+# Colorized commands
+# ==============================
+alias ls="eza -h --icons --group-directories-first --color=always"
+alias grep="grep -i --color=auto"
+alias diff="diff --color=auto"
+alias ip="ip -color=auto"
+alias cat="bat -pp"
 
-# --- Git command aliases ---
-alias \
-  gadd="git add ." \
-  gcommit="commitFunction" \
-  gpush="pushFunction" \
-  gpull="pullFunction"
+# ==============================
+# Misc shortcuts
+# ==============================
+alias lf="lfub"
+alias magit="nvim -c MagitOnly"
+alias ref="shortcuts >/dev/null; \
+  source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc; \
+  source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc; \
+  source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
