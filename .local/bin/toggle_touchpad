@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# toggle-touchpad.sh
+# Toggles the ELAN touchpad on/off using xinput
+
+DEVICE_NAME="ELAN0791:00 04F3:30FD Touchpad"
+
+# Get the device ID
+DEVICE_ID=$(xinput list --id-only "$DEVICE_NAME")
+
+if [ -z "$DEVICE_ID" ]; then
+    echo "Touchpad device not found!"
+    exit 1
+fi
+
+# Check if touchpad is enabled
+STATUS=$(xinput list-props $DEVICE_ID | grep "Device Enabled" | awk '{print $4}')
+
+if [ "$STATUS" -eq 1 ]; then
+    xinput disable $DEVICE_ID
+    notify-send "Touchpad Disabled"
+else
+    xinput enable $DEVICE_ID
+    notify-send "Touchpad Enabled"
+fi
