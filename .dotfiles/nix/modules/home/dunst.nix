@@ -1,0 +1,30 @@
+{ config, pkgs, ... }:
+
+{
+  services.dunst = {
+    enable = true;
+
+    settings = {
+      global = {
+        frame_color = "#191719";
+        separator_color = "frame";
+      };
+
+      "urgency-low" = {
+        background = "#191719";
+        foreground = "#bbac9b";
+      };
+
+      "urgency-normal" = {
+        background = "#191719";
+        foreground = "#bbac9b";
+      };
+
+      "urgency-critical" = {
+        background = "#191719";
+        foreground = "#bbac9b";
+        frame_color = "#ffffff";
+      };
+    };
+  };
+}

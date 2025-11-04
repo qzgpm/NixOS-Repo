@@ -1,0 +1,36 @@
+{ config, pkgs, ... }:
+
+{
+  home.file.".config/fontconfig/fonts.conf".text = ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+    <fontconfig>
+      <match target="pattern">
+        <test name="family" compare="eq">
+          <string>monospace</string>
+        </test>
+        <edit name="family" mode="assign" binding="strong">
+          <string>JetBrainsMono Nerd Font Mono</string>
+        </edit>
+      </match>
+
+      <match target="pattern">
+        <test name="family" compare="eq">
+          <string>sans-serif</string>
+        </test>
+        <edit name="family" mode="assign" binding="strong">
+          <string>JetBrainsMono Nerd Font Mono</string>
+        </edit>
+      </match>
+
+      <match target="pattern">
+        <test name="family" compare="eq">
+          <string>serif</string>
+        </test>
+        <edit name="family" mode="assign" binding="strong">
+          <string>JetBrainsMono Nerd Font Mono</string>
+        </edit>
+      </match>
+    </fontconfig>
+  '';
+}

@@ -6,6 +6,11 @@
 
   imports = [
     ../../modules/home/common.nix
+    ../../modules/home/dunst.nix
+    ../../modules/home/fastfetch.nix
+    ../../modules/home/fonts.nix
+    ../../modules/home/mpv.nix
+    ../../modules/home/nsxiv.nix
   ];
 
   home.stateVersion = "25.05";
