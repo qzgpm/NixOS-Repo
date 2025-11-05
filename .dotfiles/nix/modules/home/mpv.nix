@@ -7,7 +7,6 @@
       # ─── ESSENTIAL SETTINGS ───
       vo = "gpu";
       gpu-api = "opengl";
-      gpu-context = "x11";
       hwdec = "vaapi";
       hwdec-codecs = "all";
 
