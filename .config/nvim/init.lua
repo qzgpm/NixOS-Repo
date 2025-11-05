@@ -1,3 +1,35 @@
+-- 🚀 Lazy.nvim bootstrap
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git", "clone", "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Initialize lazy.nvim
+require("lazy").setup({
+  { "junegunn/fzf" },
+  { "junegunn/fzf.vim" },
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({
+        options = { theme = "auto", globalstatus = true },
+      })
+    end,
+  },
+  {
+    "windwp/nvim-autopairs",
+    config = function()
+      require("nvim-autopairs").setup({})
+    end,
+  },
+})
+
 -- Options
 vim.o.number  = true
 vim.o.relativenumber  = true
@@ -38,14 +70,6 @@ vim.o.showmatch = true
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 
--- Auto-pair brackets
-vim.keymap.set("i", "(", "()<Left>")
-vim.keymap.set("i", "[", "[]<Left>")
-vim.keymap.set("i", "{", "{}<Left>")
-vim.keymap.set("i", "\"", "\"\"<Left>")
-vim.keymap.set("i", "'", "''<Left>")
-vim.keymap.set("i", "`", "``<Left>")
-
 -- Remove trailing white spaces
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
@@ -54,4 +78,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.cmd([[%s/\s\+$//e]])
     vim.fn.setpos(".", save_cursor)
   end,
-})
+}
