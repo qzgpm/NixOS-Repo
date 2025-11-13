@@ -49,7 +49,6 @@
           pulseaudio
           libGL
           mesa
-          mesa.drivers
         ];
         runScript = "bash";
       }}/bin/gog-shell";
