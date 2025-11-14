@@ -308,8 +308,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~SPTAGMASK } },
 
   /* Tab Shenanigans */
-	{ MODKEY|ShiftMask,             XK_g,          shifttag,               { .i = +1 } }, // note keybinding conflict with focusadjacenttag tagtoleft
-	{ MODKEY|ShiftMask,             XK_semicolon,  shifttag,               { .i = -1 } }, // note keybinding conflict with focusadjacenttag tagtoright
+	{ MODKEY|ShiftMask,             XK_g,          shifttag,               { .i = +1 } },
+	{ MODKEY|ShiftMask,             XK_semicolon,  shifttag,               { .i = -1 } },
 	{ MODKEY,                       XK_g,          shiftview,              { .i = +1 } },
 	{ MODKEY,                       XK_semicolon,  shiftview,              { .i = -1 } },
 
@@ -390,6 +390,9 @@ static const Key keys[] = {
 	/* Brightness Controls */
 	{ 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl s 1000+") },
 	{ 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl s 1000-") },
+
+  /* Screenshots */
+  { 0, XK_Print,                                 spawn,                  SHCMD("scrot -s ~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png") },
 };
 
 /* button definitions */
