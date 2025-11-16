@@ -9,9 +9,11 @@
 
   system.stateVersion = "25.05";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.auto-optimise-store = true;
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d";
+    options = "-d";
+    persistent = true;
   };
 }
