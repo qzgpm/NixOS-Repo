@@ -10,4 +10,5 @@
   users = import ./users.nix;
   programs = import ./programs.nix;
   packages = import ./packages.nix;
+  firewall = import ./firewall.nix;
 }
