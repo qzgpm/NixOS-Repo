@@ -10,6 +10,7 @@
     git
     wget
     bc
+    fd
     fzf
     eza
     bat
