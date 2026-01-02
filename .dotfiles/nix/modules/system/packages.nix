@@ -16,6 +16,7 @@
     procps       # system info utilities (ps, top, etc.)
     file         # inspect file types
     fontconfig   # font management
+    flac         # Music file management
 
     # ────────────────────────────────
     # 📱 Android / ADB Tools
