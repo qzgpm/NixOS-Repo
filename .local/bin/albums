@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mapfile -t files < <(find "${XDG_MEDIA_DIR:-$HOME/Media}/Music" -type f -name "*.m3u")
+mapfile -t files < <(fd --extension "m3u" --type f --color=never --full-path "${XDG_MEDIA_DIR:-$HOME/Media}/Music")
 
 selection=$(printf '%s\n' "${files[@]}" | xargs -I{} basename "{}" | dmenu -i -l 10 -p "Albums")
 [[ -z "$selection" ]] && exit
@@ -10,8 +10,8 @@ for file in "${files[@]}"; do
         mpv "$file" \
             --title="Now Playing" \
             --geometry=250x250 \
-	    --no-border
-            --autofit=25%25%
+            --no-border \
+            --autofit=25%
         break
     fi
 done
