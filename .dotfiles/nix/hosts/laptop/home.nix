@@ -11,6 +11,7 @@
     ../../modules/home/fonts.nix
     ../../modules/home/mpv.nix
     ../../modules/home/nsxiv.nix
+    ../../modules/home/mpd.nix
   ];
 
   home.stateVersion = "25.05";
