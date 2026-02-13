@@ -2,17 +2,17 @@ self: super:
 
 let
   commonX11Deps = [
-    super.xorg.libX11
-    super.xorg.libXft
-    super.xorg.libXinerama
-    super.xorg.libxcb
-    super.xorg.xcbutil
-    super.xorg.xcbutilimage
-    super.xorg.xcbutilkeysyms
-    super.xorg.xcbutilwm
-    super.xorg.libXfixes
-    super.xorg.xorgproto
-    super.xorg.libXi
+    super.libX11
+    super.libXft
+    super.libXinerama
+    super.libxcb
+    super.xcbutil
+    super.xcbutilimage
+    super.xcbutilkeysyms
+    super.xcbutilwm
+    super.libXfixes
+    super.xorgproto
+    super.libXi
   ];
 
   commonFontDeps = [
