@@ -1,4 +1,12 @@
 -- ────────────────────────────────
+-- Leader
+-- ────────────────────────────────
+vim.g.mapleader = " "
+
+-- Enable faster Lua loader
+pcall(vim.loader.enable)
+
+-- ────────────────────────────────
 -- 🚀 Lazy.nvim bootstrap
 -- ────────────────────────────────
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -36,7 +44,56 @@ require("lazy").setup({
   {
     "windwp/nvim-autopairs",
     config = function()
-      require("nvim-autopairs").setup({})
+      local autopairs = require("nvim-autopairs")
+      autopairs.setup({})
+
+      -- Integrate with nvim-cmp
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp = require("cmp")
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    end,
+  },
+
+  -- Completion
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+    },
+    config = function()
+      local cmp = require("cmp")
+
+      cmp.setup({
+        completion = {
+          completeopt = "menu,menuone,noinsert",
+        },
+
+        mapping = cmp.mapping.preset.insert({
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<Tab>"] = cmp.mapping.select_next_item(),
+          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+        }),
+
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "buffer" },
+          { name = "path" },
+        },
+
+        formatting = {
+          format = function(entry, vim_item)
+            vim_item.menu = ({
+              nvim_lsp = "[LSP]",
+              buffer = "[BUF]",
+              path = "[PATH]",
+            })[entry.source.name]
+            return vim_item
+          end,
+        },
+      })
     end,
   },
 
@@ -45,7 +102,7 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
     config = function()
 
-      -- ───── Diagnostics ─────
+      -- Diagnostics
       vim.diagnostic.config({
         virtual_text = { prefix = "●", spacing = 2 },
         signs = true,
@@ -53,7 +110,7 @@ require("lazy").setup({
         update_in_insert = false,
       })
 
-      -- ───── Keymaps on LSP attach ─────
+      -- On attach
       local function on_attach(_, bufnr)
         local opts = { buffer = bufnr, silent = true }
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
@@ -68,16 +125,20 @@ require("lazy").setup({
         end
       end
 
-      -- ───── Root dir helper ─────
+      -- Root detection
       local function find_root(fname)
         local roots = {
-          "pyproject.toml", "setup.py", ".git", "compile_commands.json", "Makefile"
+          "pyproject.toml", "setup.py", ".git",
+          "compile_commands.json", "Makefile"
         }
         local root = vim.fs.find(roots, { upward = true, path = fname })[1]
         return root and vim.fs.dirname(root) or vim.fn.getcwd()
       end
 
-      -- ───── LSP wrapper: Add ANY LSP easily ─────
+      -- Capabilities for completion
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      -- LSP wrapper
       local function setup_lsp(name, opts)
         vim.api.nvim_create_autocmd("FileType", {
           pattern = opts.filetypes,
@@ -85,7 +146,6 @@ require("lazy").setup({
             local bufnr = args.buf
             local fname = vim.api.nvim_buf_get_name(bufnr)
 
-            -- Avoid duplicate clients
             for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
               if client.name == name then return end
             end
@@ -97,16 +157,13 @@ require("lazy").setup({
               root_dir = find_root(fname),
               on_attach = on_attach,
               settings = opts.settings or {},
+              capabilities = capabilities,
             })
           end,
         })
       end
 
-      -- ────────────────────────────────
-      -- LSP Servers
-      -- ────────────────────────────────
-
-      -- Python (Pyright)
+      -- Python
       setup_lsp("pyright", {
         filetypes = { "python" },
         cmd = { "pyright-langserver", "--stdio" },
@@ -124,7 +181,13 @@ require("lazy").setup({
       -- C / C++
       setup_lsp("clangd", {
         filetypes = { "c", "cpp", "h", "hpp" },
-        cmd = { "clangd" },
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--completion-style=detailed",
+          "--header-insertion=never",
+        },
       })
 
     end,
@@ -153,7 +216,7 @@ vim.o.expandtab = true
 vim.o.smartindent = true
 
 -- Theme
-vim.cmd.colorscheme("vim")
+vim.cmd.colorscheme("unokai")
 vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
@@ -170,12 +233,10 @@ vim.o.showmatch = true
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.g.mapleader = " "
-
 -- Toggle spelling
 vim.keymap.set("n", "<leader>o", ":setlocal spell! spelllang=en_us<CR>")
 
--- FZF
+-- FZF mappings
 vim.keymap.set("n", "<leader>f", ":Files<CR>")
 vim.keymap.set("n", "<leader>g", ":Rg<CR>")
 vim.keymap.set("n", "<leader>b", ":Buffers<CR>")
@@ -186,7 +247,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
     local save = vim.fn.getpos(".")
-    vim.cmd([[%s/\s\+$//e]])
+    vim.cmd([[%s/\\s\\+$//e]])
     vim.fn.setpos(".", save)
   end,
 })
