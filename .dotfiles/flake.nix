@@ -32,26 +32,5 @@
         ];
       };
     };
-
-    apps.${system}.gog-shell = {
-      type = "app";
-      program = "${pkgs.buildFHSEnv {
-        name = "gog-shell";
-        targetPkgs = pkgs: with pkgs; [
-          bash
-          coreutils
-          glibc
-          libX11
-          libXcursor
-          libXi
-          libXrandr
-          alsa-lib
-          pulseaudio
-          libGL
-          mesa
-        ];
-        runScript = "bash";
-      }}/bin/gog-shell";
-    };
   };
 }

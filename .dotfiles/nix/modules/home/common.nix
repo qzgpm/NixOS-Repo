@@ -96,5 +96,6 @@
     python3
     pyright
     clang-tools
+    steam-run
   ];
 }

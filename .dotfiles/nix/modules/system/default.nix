@@ -11,4 +11,5 @@
   programs = import ./programs.nix;
   packages = import ./packages.nix;
   firewall = import ./firewall.nix;
+  unfree = import ./unfree.nix;
 }
