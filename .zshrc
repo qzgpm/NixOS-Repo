@@ -3,7 +3,7 @@ autoload -U colors && colors
 PS1="%B%{$fg[grey]%}[%{$fg[white]%}%n%{$fg[grey]%}@%{$fg[white]%}%M %{$fg[white]%}%~%{$fg[grey]%}]%{$reset_color%}$%b "
 
 #Quality of life improvements
-setopt autocd
+#setopt autocd
 stty stop undef
 setopt interactive_comments
 
@@ -56,23 +56,6 @@ preexec () {
 	echo -ne '\e[5 q';
 }
 
-#Lf cd with ctrl-o
-lfcd () {
-	tmp="$(mktemp -uq)"
-	trap 'rm -f $tmp >/dev/null 2>&1 && trap - HUP INT QUIT TERM PWR EXIT' HUP INT QUIT TERM PWR EXIT
-	lf -last-dir-path="$tmp" "$@"
-	if [ -f "$tmp" ]; then
-		dir="$(cat "$tmp")"
-		[ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-	fi
-}
-bindkey -s '^o' '^ulfcd\n'
-
-bindkey -s '^a' '^ubc -lq\n'
-
-bindkey -s '^f' '^ucd "$(dirname "$(fzf)")"\n'
-
-bindkey -s '^[[P' delete-char
 
 #Edit in vim
 autoload edit-command-line; zle -N edit-command-line
@@ -81,5 +64,4 @@ bindkey -M vicmd '^[[P' vi-delete-char
 bindkey -M vicmd '^e' edit-command-line
 bindkey -M visual '^[[P' vi-delete
 
-#Syntax highlighting(Always last)
-source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+source <(fzf --zsh)
