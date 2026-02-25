@@ -10,6 +10,7 @@
     git
     wget
     bc
+    file
     fd
     fzf
     eza
@@ -93,9 +94,6 @@
     # ────────────────────────────────
     # 🎮 Misc / Legacy Tools
     # ────────────────────────────────
-    python3
-    pyright
-    clang-tools
     steam-run
   ];
 }

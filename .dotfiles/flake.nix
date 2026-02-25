@@ -4,33 +4,36 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
-    # Home Manager
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, ... }:
   let
     system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
   in {
-    nixosConfigurations = {
-      laptop = nixpkgs.lib.nixosSystem {
-        system = system;
+    nixosConfigurations.laptop =
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+
+        specialArgs = { inherit inputs self; };
 
         modules = [
           ./nix/hosts/laptop/configuration.nix
+
           home-manager.nixosModules.home-manager
+
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.dlvn = import ./nix/hosts/laptop/home.nix;
             home-manager.backupFileExtension = "backup";
+
+            home-manager.users.dlvn =
+              import ./nix/hosts/laptop/home.nix;
           }
         ];
       };
-    };
   };
 }

@@ -31,23 +31,24 @@ se() {
 }
 
 # ==============================
-# Git helpers (functions instead of aliases)
+# Git helper functions
 # ==============================
 gadd() { git add .; }
-gcommit() { git commit -m "$*"; }
+
+gcommit() { [ $# -eq 0 ] && git commit || git commit -m "$*"; }
+
 gpush() {
-  local branch
-  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   [ -n "$branch" ] && git push -u origin "$branch" || echo "Not a git repository"
 }
+
 gpull() {
-  local branch
-  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   [ -n "$branch" ] && git pull origin "$branch" || echo "Not a git repository"
 }
 
 # ==============================
-# Verbose and default aliases
+# Verbosity and default aliases
 # ==============================
 alias cp="cp -iv"
 alias mv="mv -iv"
@@ -56,15 +57,10 @@ alias rm="rm -vI"
 alias bc="bc -ql"
 alias ka="killall"
 alias du="dust -d 2 --reverse"
+alias df="df -h | bat -p -l conf"
 alias python="python -q"
 alias less="bat --paging=always --plain"
-
-# ==============================
-# nixos-rebuild wrapper
-# ==============================
-nixos-rebuild() {
-  sudo command nixos-rebuild --flake "$HOME/.dotfiles#laptop" "$@"
-}
+alias rsync="rsync -avh --progress --partial"
 
 # ==============================
 # Colorized commands
@@ -74,6 +70,7 @@ alias grep="grep -i --color=auto"
 alias diff="diff --color=auto"
 alias ip="ip -color=auto"
 alias cat="bat -pp"
+alias lsblk="lsblk|bat -p -l conf"
 
 # ==============================
 # Misc shortcuts
@@ -84,3 +81,4 @@ alias ref="shortcuts >/dev/null; \
   source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc; \
   source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc; \
   source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
+alias movie='fd -tf -E "*.srt" -p Films | fzf | xargs -r -I {} mpv {}'

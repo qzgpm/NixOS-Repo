@@ -1,24 +1,14 @@
 self: super:
 
 let
-  commonX11Deps = [
-    super.libX11
-    super.libXft
-    super.libXinerama
-    super.libxcb
-    super.xcbutil
-    super.xcbutilimage
-    super.xcbutilkeysyms
-    super.xcbutilwm
-    super.libXfixes
-    super.xorgproto
-    super.libXi
+  commonX11Deps = with super; [
+    libX11 libXft libXinerama libxcb
+    xcbutil xcbutilimage xcbutilkeysyms xcbutilwm
+    libXfixes xorgproto libXi
   ];
 
-  commonFontDeps = [
-    super.fontconfig
-    super.freetype
-    super.harfbuzz
+  commonFontDeps = with super; [
+    fontconfig freetype harfbuzz
   ];
 
   mkSuckless = {
@@ -31,42 +21,45 @@ let
     desc ? "Custom build of ${name}",
     extraInstall ? "",
   }:
+
     super.stdenv.mkDerivation {
       pname = "${name}_custom";
-      version = "2025-08-29";
+      version = "custom";
 
       src = super.lib.cleanSource src;
 
+      strictDeps = true;
       dontConfigure = true;
+      enableParallelBuilding = true;
 
       nativeBuildInputs = [ super.pkg-config ];
-
       buildInputs = deps ++ extraDeps;
 
       buildPhase = ''
+        runHook preBuild
         make clean
         make
+        runHook postBuild
       '';
 
       installPhase = ''
-        mkdir -p $out/bin
+        runHook preInstall
 
-        # Main binary
+        mkdir -p $out/bin
         cp -v ${bin} $out/bin/ || true
 
-        # Any helper scripts (e.g. st-copyout, st-urlhandler, dmenu_run)
         find . -maxdepth 1 -type f -perm -u+x \
           -name "${bin}-*" -exec cp -v {} $out/bin/ \;
 
-        # Man pages
         mkdir -p $out/share/man/man1
         cp -v *.1 $out/share/man/man1/ 2>/dev/null || true
 
-        # Docs
         mkdir -p $out/share/doc/${name}
         cp -v LICENSE README* $out/share/doc/${name}/ 2>/dev/null || true
 
         ${extraInstall}
+
+        runHook postInstall
       '';
 
       meta = {
@@ -74,16 +67,16 @@ let
         homepage = homepage;
         license = super.lib.licenses.mit;
         platforms = super.lib.platforms.linux;
-        maintainers = [ super.lib.maintainers.your-name-here ];
+        maintainers = [];
       };
     };
+
 in {
   dwm = mkSuckless {
     name = "dwm";
     src = ./dwm;
     bin = "dwm";
     deps = commonX11Deps ++ commonFontDeps;
-    desc = "Dynamic window manager (custom build)";
   };
 
   st = mkSuckless {
@@ -91,9 +84,8 @@ in {
     src = ./st;
     bin = "st";
     deps = commonX11Deps ++ commonFontDeps;
-    desc = "Simple terminal (custom build)";
+
     extraInstall = ''
-      # Install terminfo
       mkdir -p $out/share/terminfo/s
       tic -s -o $out/share/terminfo st.info || true
     '';
@@ -104,18 +96,5 @@ in {
     src = ./dwmblocks;
     bin = "dwmblocks";
     deps = commonX11Deps ++ commonFontDeps;
-    desc = "Modular status bar for dwm (custom build)";
   };
-
-# Uncomment and configure dmenu if needed
-#  dmenu = mkSuckless {
-#    name = "dmenu";
-#    src = ./dmenu;
-#    bin = "dmenu";
-#    deps = commonX11Deps ++ commonFontDeps;
-#    desc = "Dynamic menu (custom build)";
-#    extraInstall = ''
-#      cp -v dmenu_path dmenu_run $out/bin/ 2>/dev/null || true
-#    '';
-#  };
 }

@@ -4,18 +4,9 @@
   environment.systemPackages = with pkgs; [
 
     # ────────────────────────────────
-    # 🧰 Development Tools
-    # ────────────────────────────────
-    gcc
-    gnumake
-    pkg-config
-
-    # ────────────────────────────────
     # 🧠 System Utilities
     # ────────────────────────────────
     procps       # system info utilities (ps, top, etc.)
-    file         # inspect file types
-    fontconfig   # font management
     flac         # Music file management
 
     # ────────────────────────────────
