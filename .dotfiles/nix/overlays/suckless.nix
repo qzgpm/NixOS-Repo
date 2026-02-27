@@ -1,7 +1,7 @@
 self: super:
 
 let
-  commonX11Deps = with super; [
+  commonX11Deps = with super.xorg; [
     libX11 libXft libXinerama libxcb
     xcbutil xcbutilimage xcbutilkeysyms xcbutilwm
     libXfixes xorgproto libXi
