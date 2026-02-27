@@ -21,6 +21,8 @@ enum win_mode {
 	MODE_NUMLOCK     = 1 << 17,
 	MODE_MOUSE       = MODE_MOUSEBTN|MODE_MOUSEMOTION|MODE_MOUSEX10\
 	                  |MODE_MOUSEMANY,
+	MODE_PLACEHOLDER = 1 << 18,
+	MODE_KBDSELECT   = 1 << 19,
 };
 
 void xbell(void);
@@ -30,7 +32,6 @@ void xdrawline(Line, int, int, int);
 void xfinishdraw(void);
 void xloadcols(void);
 int xsetcolorname(int, const char *);
-int xgetcolor(int, unsigned char *, unsigned char *, unsigned char *);
 void xseticontitle(char *);
 void xsettitle(char *);
 int xsetcursor(int);
@@ -39,4 +40,5 @@ void xsetpointermotion(int);
 void xsetsel(char *);
 int xstartdraw(void);
 void xximspot(int, int);
-
+void xclearwin(void);
+void xdrawglyph(Glyph, int, int);

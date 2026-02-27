@@ -28,10 +28,10 @@
     '';
   };
 
- # programs.ncmpcpp = {
- #   enable = true;
- #   settings = {
- #     mpd_host = "${config.home.homeDirectory}/.config/mpd/socket";
- #   };
- # };
+#  programs.ncmpcpp = {
+#    enable = true;
+#    settings = {
+#      mpd_host = "${config.home.homeDirectory}/.config/mpd/socket";
+#    };
+#  };
 }
