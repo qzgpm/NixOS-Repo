@@ -1,12 +1,17 @@
-{ config, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 
 {
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 80 443 ];
-    allowedUDPPortRanges = [
-      { from = 4000; to = 4007; }
-      { from = 8000; to = 8010; }
-    ];
+
+    # Block all unsolicited inbound
+    allowedTCPPorts = [ ];
+    allowedUDPPorts = [ ];
+
+    # Allow established connections 
+    allowPing = false;
+
+    # Extra protection
+    logReversePathDrops = true;
   };
 }
