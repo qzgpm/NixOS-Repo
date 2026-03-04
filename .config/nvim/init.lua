@@ -6,13 +6,19 @@ vim.g.mapleader = " "
 -- Enable faster Lua loader
 pcall(vim.loader.enable)
 
+-- Faster startup
+vim.opt.updatetime = 200
+vim.opt.timeoutlen = 300
+vim.opt.lazyredraw = true
+vim.opt.synmaxcol = 240
+
 -- ────────────────────────────────
 -- 🚀 Lazy.nvim bootstrap
 -- ────────────────────────────────
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git", "clone", "--filter=blob:none",
+    "git", "clone", "--filter=blob:none", "--depth=1",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
     lazypath,
@@ -26,8 +32,16 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 
   -- FZF
-  { "junegunn/fzf" },
-  { "junegunn/fzf.vim" },
+  {
+    "junegunn/fzf",
+    build = "./install --bin",
+  },
+
+  {
+    "junegunn/fzf.vim",
+    dependencies = { "junegunn/fzf" },
+    cmd = { "Files", "Rg", "Buffers", "Commands" },
+  },
 
   -- Lualine
   {
@@ -43,20 +57,23 @@ require("lazy").setup({
   -- Autopairs
   {
     "windwp/nvim-autopairs",
+    event = "InsertEnter",
     config = function()
       local autopairs = require("nvim-autopairs")
       autopairs.setup({})
 
-      -- Integrate with nvim-cmp
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp_autopairs =
+        require("nvim-autopairs.completion.cmp")
       local cmp = require("cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      cmp.event:on("confirm_done",
+        cmp_autopairs.on_confirm_done())
     end,
   },
 
   -- Completion
   {
     "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
@@ -65,49 +82,84 @@ require("lazy").setup({
     config = function()
       local cmp = require("cmp")
 
-      cmp.setup({
-        completion = {
-          completeopt = "menu,menuone,noinsert",
-        },
+    cmp.setup({
+      completion = {
+        completeopt = "menu,menuone,noinsert",
+      },
 
-        mapping = cmp.mapping.preset.insert({
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"] = cmp.mapping.select_next_item(),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+      window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+      },
+
+      experimental = {
+        ghost_text = true,
+      },
+
+      mapping = cmp.mapping.preset.insert({
+
+        ["<C-Space>"] = cmp.mapping.complete(),
+
+        ["<CR>"] = cmp.mapping.confirm({
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = false,
         }),
 
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "buffer" },
-          { name = "path" },
-        },
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
 
-        formatting = {
-          format = function(entry, vim_item)
-            vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              buffer = "[BUF]",
-              path = "[PATH]",
-            })[entry.source.name]
-            return vim_item
-          end,
-        },
-      })
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+      }),
+
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "path" },
+      }, {
+        { name = "buffer", keyword_length = 4 },
+      }),
+
+      formatting = {
+        format = function(entry, vim_item)
+          vim_item.menu = ({
+            nvim_lsp = "󰅩 LSP",
+            buffer = "󰆼 BUF",
+            path = "󰉋 PATH",
+          })[entry.source.name]
+          return vim_item
+        end,
+      },
+    })
     end,
   },
 
   -- LSPCONFIG
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
 
       -- Diagnostics
       vim.diagnostic.config({
-        virtual_text = { prefix = "●", spacing = 2 },
+        virtual_text = { prefix = "●" },
         signs = true,
         underline = true,
         update_in_insert = false,
+        severity_sort = true,
+        float = {
+          border = "rounded",
+          source = "always",
+        },
       })
 
       -- On attach
@@ -158,6 +210,9 @@ require("lazy").setup({
               on_attach = on_attach,
               settings = opts.settings or {},
               capabilities = capabilities,
+              flags = {
+                debounce_text_changes = 150,
+              },
             })
           end,
         })
@@ -206,7 +261,10 @@ vim.o.scrolloff = 10
 vim.o.sidescrolloff = 8
 vim.o.autoread = true
 vim.o.autowrite = false
-vim.opt.clipboard:append("unnamedplus")
+vim.o.undofile = true
+vim.o.clipboard = "unnamedplus"
+vim.o.splitbelow = true
+vim.o.splitright = true
 
 -- Indentation
 vim.o.tabstop = 2
@@ -242,12 +300,24 @@ vim.keymap.set("n", "<leader>g", ":Rg<CR>")
 vim.keymap.set("n", "<leader>b", ":Buffers<CR>")
 vim.keymap.set("n", "<leader>c", ":Commands<CR>")
 
+-- Window navigation without <C-w>
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = "Move to left window" })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = "Move to lower window" })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = "Move to upper window" })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = "Move to right window" })
+
+-- Resize splits using Ctrl + Arrow keys
+vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          { silent = true })
+vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          { silent = true })
+vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', { silent = true })
+
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
     local save = vim.fn.getpos(".")
-    vim.cmd([[%s/\\s\\+$//e]])
+    vim.cmd([[%s/\s\+$//e]])
     vim.fn.setpos(".", save)
   end,
 })
