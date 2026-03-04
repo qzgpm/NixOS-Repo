@@ -151,14 +151,26 @@ require("lazy").setup({
 
       -- Diagnostics
       vim.diagnostic.config({
-        virtual_text = { prefix = "●" },
+
+        -- inline messages
+        virtual_text = {
+          prefix = "●",
+          spacing = 2,
+          source = "if_many",
+        },
+
+        -- gutter icons
         signs = true,
+
         underline = true,
         update_in_insert = false,
         severity_sort = true,
+
         float = {
           border = "rounded",
           source = "always",
+          focusable = false,
+          style = "minimal",
         },
       })
 
@@ -273,12 +285,6 @@ vim.o.softtabstop = 2
 vim.o.expandtab = true
 vim.o.smartindent = true
 
--- Theme
-vim.cmd.colorscheme("unokai")
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
-
 -- Search
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -311,6 +317,27 @@ vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          { silent = true })
 vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          { silent = true })
 vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', { silent = true })
 vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', { silent = true })
+
+-- Restore diagnostic highlight colors
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    vim.cmd("highlight DiagnosticError guifg=#ff6c6b")
+    vim.cmd("highlight DiagnosticWarn  guifg=#ECBE7B")
+    vim.cmd("highlight DiagnosticInfo  guifg=#51afef")
+    vim.cmd("highlight DiagnosticHint  guifg=#98be65")
+
+    vim.cmd("highlight DiagnosticUnderlineError gui=undercurl")
+    vim.cmd("highlight DiagnosticUnderlineWarn  gui=undercurl")
+    vim.cmd("highlight DiagnosticUnderlineInfo  gui=undercurl")
+    vim.cmd("highlight DiagnosticUnderlineHint  gui=undercurl")
+  end,
+})
+
+-- Theme
+vim.cmd.colorscheme("unokai")
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
 
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd("BufWritePre", {
