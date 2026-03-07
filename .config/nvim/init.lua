@@ -369,14 +369,23 @@ vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
-  callback = function()
+  callback = function(args)
+
+    local filetype = vim.bo[args.buf].filetype
 
     -- remove trailing whitespace
     local save = vim.fn.getpos(".")
     vim.cmd([[%s/\s\+$//e]])
     vim.fn.setpos(".", save)
 
-    -- format via LSP
+    -- Python → Ruff
+    if filetype == "python" then
+      vim.cmd("silent !ruff format %")
+      vim.cmd("edit")
+      return
+    end
+
+    -- Other languages → LSP
     vim.lsp.buf.format({
       async = false,
       timeout_ms = 2000,
