@@ -1,20 +1,16 @@
 #!/bin/sh
 
-#Display shinanigans
+# Display
 xrandr --dpi 96
 setbg &
 
-#swap escape and capslock
+# Autostart
+pgrep picom || picom &
+pgrep dwmblocks || dwmblocks &
+pgrep unclutter || unclutter &
+
+# Keyboard
 setxkbmap -option caps:swapescape
 
-#Autostart
-picom &
-dwmblocks &
-dunst &
-unclutter &
-udiskie &
-pipewire &
-mpd &
-
-#xrdb wait
-[ -n "$xrdbpid" ] && wait "$xrdbpid"
+# Xresources
+xrdb "$HOME/.Xresources"

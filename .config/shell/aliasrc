@@ -50,10 +50,12 @@ gpull() {
 # ==============================
 # Verbosity and default aliases
 # ==============================
+alias sudo="doas"
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias ln="ln -i"
 alias rm="rm -vI"
+alias xargs="xargs -r"
 alias bc="bc -ql"
 alias ka="killall"
 alias du="dust -d 2 --reverse"
@@ -82,3 +84,4 @@ alias ref="shortcuts >/dev/null; \
   source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc; \
   source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 alias movie='fd -tf -E "*.srt" -p Films | fzf | xargs -r -I {} mpv {}'
+alias xclip='xclip -selection clipboard'
