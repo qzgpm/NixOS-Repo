@@ -8,13 +8,13 @@
     ./firewall.nix
     ./fonts.nix
     ./networking.nix
+    ./nix.nix
     ./packages.nix
     ./picom.nix
     ./power.nix
     ./programs.nix
     ./security.nix
     ./timezone.nix
-    ./unfree.nix
     ./users.nix
   ];
 }

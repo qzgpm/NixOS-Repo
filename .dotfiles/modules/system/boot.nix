@@ -6,7 +6,7 @@
 
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # 🧠 Memory hardening flags (safe on desktop)
+  # Memory hardening flags
   boot.kernelParams = [
     "slab_nomerge"
     "init_on_alloc=1"
@@ -14,7 +14,7 @@
     "page_alloc.shuffle=1"
   ];
 
-  # 🚫 Rarely used network protocols
+  # Rarely used network protocols
   boot.blacklistedKernelModules = [
     "dccp"
     "sctp"
