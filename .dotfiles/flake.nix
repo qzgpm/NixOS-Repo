@@ -1,8 +1,10 @@
 {
-  description = "qzgpm's NixOS Configuration";
+  description = "Delvin's NixOS Configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -10,26 +12,37 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }:
-  let
-    system = "x86_64-linux";
-  in {
-    nixosConfigurations.laptop =
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs self; };
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    flake-parts,
+    home-manager,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
 
-        modules = [
-          ./nix/hosts/laptop/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.dlvn =
-              import ./nix/hosts/laptop/home.nix;
-          }
-        ];
+      flake = {
+        overlays.default = import ./overlays;
+        nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = {inherit inputs self;};
+
+          modules = [
+            ./hosts/laptop
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+
+              home-manager.users.dlvn =
+                import ./hosts/laptop/home;
+            }
+          ];
+        };
       };
-  };
+    };
 }

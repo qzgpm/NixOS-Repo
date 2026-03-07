@@ -160,7 +160,14 @@ require("lazy").setup({
         },
 
         -- gutter icons
-        signs = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN]  = "",
+            [vim.diagnostic.severity.INFO]  = "",
+            [vim.diagnostic.severity.HINT]  = "󰌵",
+          },
+        },
 
         underline = true,
         update_in_insert = false,
@@ -175,7 +182,7 @@ require("lazy").setup({
       })
 
       -- On attach
-      local function on_attach(_, bufnr)
+      local function on_attach(client, bufnr)
         local opts = { buffer = bufnr, silent = true }
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
@@ -192,8 +199,13 @@ require("lazy").setup({
       -- Root detection
       local function find_root(fname)
         local roots = {
-          "pyproject.toml", "setup.py", ".git",
-          "compile_commands.json", "Makefile"
+          "flake.nix",
+          "shell.nix",
+          "compile_commands.json",
+          "pyproject.toml",
+          "setup.py",
+          "Makefile",
+          ".git",
         }
         local root = vim.fs.find(roots, { upward = true, path = fname })[1]
         return root and vim.fs.dirname(root) or vim.fn.getcwd()
@@ -254,6 +266,22 @@ require("lazy").setup({
           "--clang-tidy",
           "--completion-style=detailed",
           "--header-insertion=never",
+        },
+      })
+
+      -- Nix
+      setup_lsp("nixd", {
+        filetypes = { "nix" },
+        cmd = { "nixd" },
+        settings = {
+          nixd = {
+            nixpkgs = {
+              expr = "import <nixpkgs> { }",
+            },
+            formatting = {
+              command = { "alejandra" },
+            },
+          },
         },
       })
 
@@ -339,12 +367,19 @@ vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
 
--- Remove trailing whitespace
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
+
+    -- remove trailing whitespace
     local save = vim.fn.getpos(".")
     vim.cmd([[%s/\s\+$//e]])
     vim.fn.setpos(".", save)
+
+    -- format via LSP
+    vim.lsp.buf.format({
+      async = false,
+      timeout_ms = 2000,
+    })
   end,
 })
