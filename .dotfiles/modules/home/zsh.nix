@@ -16,32 +16,42 @@
     shellAliases = {
       # Editor
       vim = "nvim";
-      v = "nvim";
-      
+
       # Sudo (doas)
       sudo = "doas";
-      s = "doas";
-      
-      # Common
+
+      # Common (Verbosity & Colors)
       ls = "eza -h --icons --group-directories-first --color=always";
-      la = "eza -ah --icons --group-directories-first --color=always";
-      ll = "eza -lh --icons --group-directories-first --color=always";
       grep = "grep -i --color=auto";
       cat = "bat -pp";
       cp = "cp -iv";
       mv = "mv -iv";
       rm = "rm -vI";
-      
+      ln = "ln -i";
+      xargs = "xargs -r";
+      bc = "bc -ql";
+      ka = "killall";
+      du = "dust -d 2 --reverse";
+      df = "df -h | bat -p -l conf";
+      python = "python -q";
+      less = "bat --paging=always --plain";
+      rsync = "rsync -avh --progress --partial";
+      diff = "diff --color=auto";
+      ip = "ip -color=auto";
+      lsblk = "lsblk|bat -p -l conf";
+
       # Nix
       nr = "nh os switch";
       nu = "nh os switch --update";
       nc = "nh clean all";
-      
+
       # Misc
       lf = "lfub";
       magit = "nvim -c MagitOnly";
       xclip = "xclip -selection clipboard";
-      
+      startx = "[ -n \"$XINITRC\" ] && [ -f \"$XINITRC\" ] && startx \"$XINITRC\"";
+      movie = "fd -tf -E \"*.srt\" -p Films | fzf | xargs -r -I {} mpv {}";
+
       # Config shortcuts
       cfz = "$EDITOR /home/dlvn/Documents/NixOS-Repo/.dotfiles/modules/home/zsh.nix";
       cfn = "$EDITOR /home/dlvn/Documents/NixOS-Repo/.dotfiles/modules/system/default.nix";
@@ -65,9 +75,37 @@
       zle -N zle-keymap-select
       zle-line-init() { zle -K viins; echo -ne "\e[5 q"; }
       zle -N zle-line-init
-      
+
       # FZF integration
       source <(fzf --zsh)
+
+      # ==============================
+      # Sudo shortcuts
+      # ==============================
+      for cmd in mount umount sv updatedb su shutdown poweroff reboot; do
+        alias "$cmd"="sudo $cmd"
+      done
+      unset cmd
+
+      # ==============================
+      # Helper functions
+      # ==============================
+      se() {
+        local choice
+        choice="$(find ~/.local/bin -mindepth 1 -printf '%P\n' | fzf)"
+        [ -f "$HOME/.local/bin/$choice" ] && "$EDITOR" "$HOME/.local/bin/$choice"
+      }
+
+      gadd() { git add .; }
+      gcommit() { [ $# -eq 0 ] && git commit || git commit -m "$*"; }
+      gpush() {
+        local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+        [ -n "$branch" ] && git push -u origin "$branch" || echo "Not a git repository"
+      }
+      gpull() {
+        local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+        [ -n "$branch" ] && git pull origin "$branch" || echo "Not a git repository"
+      }
     '';
 
     envExtra = ''
