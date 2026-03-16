@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -22,7 +22,7 @@
 
       # Common (Verbosity & Colors)
       ls = "eza -h --icons --group-directories-first --color=always";
-      grep = "grep -i --color=auto";
+      grep = "rg --smart-case";
       cat = "bat -pp";
       cp = "cp -iv";
       mv = "mv -iv";

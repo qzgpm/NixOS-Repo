@@ -14,6 +14,7 @@
     dust
     tealdeer
     unclutter
+    ripgrep
 
     # ────────────────────────────────
     # 🏗️ Suckless Ecosystem
