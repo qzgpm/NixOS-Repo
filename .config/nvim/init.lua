@@ -1,22 +1,62 @@
--- ────────────────────────────────
+-- ─────────────────────────────────────────────────────────────
 -- Leader
--- ────────────────────────────────
-vim.g.mapleader = " "
+-- ─────────────────────────────────────────────────────────────
+vim.g.mapleader      = " "
+vim.g.maplocalleader = "\\"
 
--- Enable faster Lua loader
 pcall(vim.loader.enable)
 
--- Faster startup
-vim.opt.updatetime = 200
-vim.opt.timeoutlen = 300
-vim.opt.lazyredraw = true
-vim.opt.synmaxcol = 240
+-- ─────────────────────────────────────────────────────────────
+-- Options
+-- ─────────────────────────────────────────────────────────────
+local opt = vim.opt
 
--- ────────────────────────────────
--- 🚀 Lazy.nvim bootstrap
--- ────────────────────────────────
+-- UI
+opt.number         = true
+opt.relativenumber = true
+opt.cursorline     = true
+opt.signcolumn     = "yes"
+opt.termguicolors  = true
+opt.showmatch      = true
+opt.wrap           = false
+opt.scrolloff      = 10
+opt.sidescrolloff  = 8
+opt.splitbelow     = true
+opt.splitright     = true
+opt.synmaxcol      = 240
+opt.showmode       = false
+opt.pumheight      = 10
+
+-- Timing
+opt.updatetime  = 200
+opt.timeoutlen  = 300
+
+-- Editing
+opt.tabstop     = 2
+opt.shiftwidth  = 2
+opt.softtabstop = 2
+opt.expandtab   = true
+opt.smartindent = true
+opt.undofile    = true
+opt.swapfile    = false
+opt.autoread    = true
+opt.autowrite   = false
+opt.clipboard   = "unnamedplus"
+
+-- Search
+opt.ignorecase = true
+opt.smartcase  = true
+opt.hlsearch   = true
+opt.incsearch  = true
+
+-- Completion
+opt.completeopt = "menu,menuone,noinsert"
+
+-- ─────────────────────────────────────────────────────────────
+-- Lazy.nvim bootstrap
+-- ─────────────────────────────────────────────────────────────
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none", "--depth=1",
     "https://github.com/folke/lazy.nvim.git",
@@ -26,51 +66,58 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- ────────────────────────────────
--- Lazy.nvim plugins
--- ────────────────────────────────
+-- ─────────────────────────────────────────────────────────────
+-- Plugins
+-- ─────────────────────────────────────────────────────────────
 require("lazy").setup({
 
-  -- FZF
+  -- ── Icons ────────────────────────────────────────────────
+  { "nvim-tree/nvim-web-devicons", lazy = true },
+
+  -- ── Statusline ───────────────────────────────────────────
   {
-    "junegunn/fzf",
-    build = "./install --bin",
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VeryLazy",
+    opts = {
+      options = {
+        theme                = "auto",
+        globalstatus         = true,
+        component_separators = "|",
+        section_separators   = { left = "", right = "" },
+      },
+      sections = {
+        lualine_a = { "mode" },
+        lualine_b = { "branch", "diff", "diagnostics" },
+        lualine_c = { { "filename", path = 1 } },
+        lualine_x = { "encoding", "fileformat", "filetype" },
+        lualine_y = { "progress" },
+        lualine_z = { "location" },
+      },
+    },
   },
 
+  -- ── FZF ──────────────────────────────────────────────────
+  { "junegunn/fzf", build = "./install --bin" },
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
     cmd = { "Files", "Rg", "Buffers", "Commands" },
   },
 
-  -- Lualine
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      require("lualine").setup({
-        options = { theme = "auto", globalstatus = true }
-      })
-    end,
-  },
-
-  -- Autopairs
+  -- ── Autopairs ────────────────────────────────────────────
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     config = function()
-      local autopairs = require("nvim-autopairs")
+      local autopairs     = require("nvim-autopairs")
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       autopairs.setup({})
-
-      local cmp_autopairs =
-        require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-      cmp.event:on("confirm_done",
-        cmp_autopairs.on_confirm_done())
+      require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
   },
 
-  -- Completion
+  -- ── Completion ───────────────────────────────────────────
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
@@ -82,182 +129,177 @@ require("lazy").setup({
     config = function()
       local cmp = require("cmp")
 
-    cmp.setup({
-      completion = {
-        completeopt = "menu,menuone,noinsert",
-      },
+      cmp.setup({
+        window = {
+          completion    = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
 
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      },
+        experimental = { ghost_text = true },
 
-      experimental = {
-        ghost_text = true,
-      },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"]     = cmp.mapping.abort(),
+          ["<C-b>"]     = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"]     = cmp.mapping.scroll_docs(4),
 
-      mapping = cmp.mapping.preset.insert({
+          ["<CR>"] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Replace,
+            select   = false,
+          }),
 
-        ["<C-Space>"] = cmp.mapping.complete(),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_next_item()
+            else fallback() end
+          end, { "i", "s" }),
 
-        ["<CR>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = false,
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_prev_item()
+            else fallback() end
+          end, { "i", "s" }),
         }),
 
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
+        sources = cmp.config.sources(
+          { { name = "nvim_lsp" }, { name = "path" } },
+          { { name = "buffer", keyword_length = 4 } }
+        ),
 
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-      }),
-
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "path" },
-      }, {
-        { name = "buffer", keyword_length = 4 },
-      }),
-
-      formatting = {
-        format = function(entry, vim_item)
-          vim_item.menu = ({
-            nvim_lsp = "󰅩 LSP",
-            buffer = "󰆼 BUF",
-            path = "󰉋 PATH",
-          })[entry.source.name]
-          return vim_item
-        end,
-      },
-    })
+        formatting = {
+          format = function(entry, item)
+            item.menu = ({
+              nvim_lsp = "󰅩 LSP",
+              buffer   = "󰆼 BUF",
+              path     = "󰉋 PATH",
+            })[entry.source.name]
+            return item
+          end,
+        },
+      })
     end,
   },
 
-  -- LSPCONFIG
+  -- ── LSP ──────────────────────────────────────────────────
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "hrsh7th/cmp-nvim-lsp" },
     config = function()
 
-      -- Diagnostics
+      -- ── Diagnostics ──────────────────────────────────────
       vim.diagnostic.config({
-
-        -- inline messages
         virtual_text = {
-          prefix = "●",
+          prefix  = "●",
           spacing = 2,
-          source = "if_many",
+          source  = "if_many",
         },
-
-        -- gutter icons
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = "",
-            [vim.diagnostic.severity.WARN]  = "",
-            [vim.diagnostic.severity.INFO]  = "",
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN]  = "",
+            [vim.diagnostic.severity.INFO]  = "",
             [vim.diagnostic.severity.HINT]  = "󰌵",
           },
         },
-
-        underline = true,
+        underline        = true,
         update_in_insert = false,
-        severity_sort = true,
-
+        severity_sort    = true,
         float = {
-          border = "rounded",
-          source = "always",
+          border    = "rounded",
+          source    = "always",
           focusable = false,
-          style = "minimal",
+          style     = "minimal",
         },
       })
 
-      -- On attach
+      -- ── on_attach ─────────────────────────────────────────
       local function on_attach(client, bufnr)
-        local opts = { buffer = bufnr, silent = true }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, opts)
+        if client.name == "pyright" then
+          client.server_capabilities.documentFormattingProvider = false
+        end
 
-        if type(vim.lsp.inlay_hint) == "function" then
-          vim.lsp.inlay_hint(bufnr, true)
+        local map = function(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs,
+            { buffer = bufnr, silent = true, desc = desc })
+        end
+
+        map("n", "gd",         vim.lsp.buf.definition,    "Go to definition")
+        map("n", "gD",         vim.lsp.buf.declaration,   "Go to declaration")
+        map("n", "gi",         vim.lsp.buf.implementation,"Go to implementation")
+        map("n", "gr",         vim.lsp.buf.references,    "References")
+        map("n", "K",          vim.lsp.buf.hover,          "Hover docs")
+        map("n", "<leader>ca", vim.lsp.buf.code_action,   "Code action")
+        map("n", "<leader>rn", vim.lsp.buf.rename,        "Rename symbol")
+        map("n", "<leader>dl", vim.diagnostic.open_float, "Diagnostic float")
+        map("n", "[d",         vim.diagnostic.goto_prev,  "Prev diagnostic")
+        map("n", "]d",         vim.diagnostic.goto_next,  "Next diagnostic")
+
+        -- Inlay hints (0.10+)
+        if vim.lsp.inlay_hint then
+          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end
       end
 
-      -- Root detection
+      -- ── Root detection ────────────────────────────────────
       local function find_root(fname)
-        local roots = {
-          "flake.nix",
-          "shell.nix",
+        local markers = {
+          "flake.nix", "shell.nix",
           "compile_commands.json",
-          "pyproject.toml",
-          "setup.py",
-          "Makefile",
-          ".git",
+          "pyproject.toml", "setup.py",
+          "Makefile", ".git",
         }
-        local root = vim.fs.find(roots, { upward = true, path = fname })[1]
-        return root and vim.fs.dirname(root) or vim.fn.getcwd()
+        local found = vim.fs.find(markers, { upward = true, path = fname })[1]
+        return found and vim.fs.dirname(found) or vim.fn.getcwd()
       end
 
-      -- Capabilities for completion
+      -- ── Capabilities ──────────────────────────────────────
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- LSP wrapper
+      -- ── Generic LSP starter ───────────────────────────────
       local function setup_lsp(name, opts)
         vim.api.nvim_create_autocmd("FileType", {
-          pattern = opts.filetypes,
+          pattern  = opts.filetypes,
           callback = function(args)
             local bufnr = args.buf
-            local fname = vim.api.nvim_buf_get_name(bufnr)
+            local fname  = vim.api.nvim_buf_get_name(bufnr)
 
-            for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-              if client.name == name then return end
+            for _, c in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+              if c.name == name then return end
             end
 
             vim.lsp.start({
-              name = name,
-              cmd = opts.cmd,
-              filetypes = opts.filetypes,
-              root_dir = find_root(fname),
-              on_attach = on_attach,
-              settings = opts.settings or {},
+              name         = name,
+              cmd          = opts.cmd,
+              filetypes    = opts.filetypes,
+              root_dir     = find_root(fname),
+              on_attach    = on_attach,
+              settings     = opts.settings or {},
               capabilities = capabilities,
-              flags = {
-                debounce_text_changes = 150,
-              },
+              flags        = { debounce_text_changes = 150 },
             })
           end,
         })
       end
 
-      -- Python
       setup_lsp("pyright", {
         filetypes = { "python" },
-        cmd = { "pyright-langserver", "--stdio" },
-        settings = {
+        cmd       = { "pyright-langserver", "--stdio" },
+        settings  = {
           python = {
             analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
+              typeCheckingMode       = "basic",
+              autoSearchPaths        = true,
               useLibraryCodeForTypes = true,
             },
           },
         },
       })
 
-      -- C / C++
+      setup_lsp("ruff", {
+        filetypes = { "python" },
+        cmd       = { "ruff", "server" },
+      })
+
+      -- ── C / C++ ───────────────────────────────────────────
       setup_lsp("clangd", {
         filetypes = { "c", "cpp", "h", "hpp" },
         cmd = {
@@ -269,18 +311,14 @@ require("lazy").setup({
         },
       })
 
-      -- Nix
+      -- ── Nix ───────────────────────────────────────────────
       setup_lsp("nixd", {
         filetypes = { "nix" },
-        cmd = { "nixd" },
-        settings = {
+        cmd       = { "nixd" },
+        settings  = {
           nixd = {
-            nixpkgs = {
-              expr = "import <nixpkgs> { }",
-            },
-            formatting = {
-              command = { "alejandra" },
-            },
+            nixpkgs    = { expr = "import <nixpkgs> { }" },
+            formatting = { command = { "alejandra" } },
           },
         },
       })
@@ -288,107 +326,140 @@ require("lazy").setup({
     end,
   },
 
+}, {
+  ui = { border = "rounded" },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip", "matchit", "matchparen",
+        "netrwPlugin", "tarPlugin", "tohtml",
+        "tutor", "zipPlugin",
+      },
+    },
+  },
 })
 
--- ────────────────────────────────
--- General options
--- ────────────────────────────────
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.swapfile = false
-vim.o.wrap = false
-vim.o.scrolloff = 10
-vim.o.sidescrolloff = 8
-vim.o.autoread = true
-vim.o.autowrite = false
-vim.o.undofile = true
-vim.o.clipboard = "unnamedplus"
-vim.o.splitbelow = true
-vim.o.splitright = true
-
--- Indentation
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
-vim.o.softtabstop = 2
-vim.o.expandtab = true
-vim.o.smartindent = true
-
--- Search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Visual
-vim.o.termguicolors = true
-vim.o.showmatch = true
+-- ─────────────────────────────────────────────────────────────
+-- Keymaps
+-- ─────────────────────────────────────────────────────────────
+local map = function(mode, lhs, rhs, opts)
+  vim.keymap.set(mode, lhs, rhs,
+    vim.tbl_extend("force", { silent = true }, opts or {}))
+end
 
 -- Better indenting in visual mode
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
+map("v", "H", "<gv", { desc = "Move line left" })
+map("v", "L", ">gv", { desc = "Move line right" })
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+
+-- Clear search highlight
+map("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Toggle spelling
-vim.keymap.set("n", "<leader>o", ":setlocal spell! spelllang=en_us<CR>")
+map("n", "<leader>os", "<cmd>setlocal spell! spelllang=en_us<CR>",
+  { desc = "Toggle spelling" })
 
--- FZF mappings
-vim.keymap.set("n", "<leader>f", ":Files<CR>")
-vim.keymap.set("n", "<leader>g", ":Rg<CR>")
-vim.keymap.set("n", "<leader>b", ":Buffers<CR>")
-vim.keymap.set("n", "<leader>c", ":Commands<CR>")
+-- FZF
+map("n", "<leader>f", "<cmd>Files<CR>",    { desc = "Find files" })
+map("n", "<leader>g", "<cmd>Rg<CR>",       { desc = "Live grep" })
+map("n", "<leader>b", "<cmd>Buffers<CR>",  { desc = "Buffers" })
+map("n", "<leader>c", "<cmd>Commands<CR>", { desc = "Commands" })
 
--- Window navigation without <C-w>
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = "Move to left window" })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = "Move to lower window" })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = "Move to upper window" })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = "Move to right window" })
+-- Window navigation
+map("n", "<C-h>", "<C-w>h", { desc = "Window left" })
+map("n", "<C-j>", "<C-w>j", { desc = "Window down" })
+map("n", "<C-k>", "<C-w>k", { desc = "Window up" })
+map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 
--- Resize splits using Ctrl + Arrow keys
-vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          { silent = true })
-vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          { silent = true })
-vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', { silent = true })
-vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', { silent = true })
+-- Resize splits
+map("n", "<C-Up>",    "<cmd>resize +2<CR>")
+map("n", "<C-Down>",  "<cmd>resize -2<CR>")
+map("n", "<C-Left>",  "<cmd>vertical resize +2<CR>")
+map("n", "<C-Right>", "<cmd>vertical resize -2<CR>")
 
--- Restore diagnostic highlight colors
-vim.api.nvim_create_autocmd("ColorScheme", {
+-- Keep cursor centered when jumping
+map("n", "<C-d>", "<C-d>zz")
+map("n", "<C-u>", "<C-u>zz")
+map("n", "n",     "nzzzv")
+map("n", "N",     "Nzzzv")
+
+-- ─────────────────────────────────────────────────────────────
+-- Autocommands
+-- ─────────────────────────────────────────────────────────────
+local augroup = vim.api.nvim_create_augroup
+local autocmd = vim.api.nvim_create_autocmd
+
+-- Restore diagnostic highlight colors after colorscheme changes
+autocmd("ColorScheme", {
+  group    = augroup("DiagnosticColors", { clear = true }),
   callback = function()
-    vim.cmd("highlight DiagnosticError guifg=#ff6c6b")
-    vim.cmd("highlight DiagnosticWarn  guifg=#ECBE7B")
-    vim.cmd("highlight DiagnosticInfo  guifg=#51afef")
-    vim.cmd("highlight DiagnosticHint  guifg=#98be65")
-
-    vim.cmd("highlight DiagnosticUnderlineError gui=undercurl")
-    vim.cmd("highlight DiagnosticUnderlineWarn  gui=undercurl")
-    vim.cmd("highlight DiagnosticUnderlineInfo  gui=undercurl")
-    vim.cmd("highlight DiagnosticUnderlineHint  gui=undercurl")
+    local hl = vim.api.nvim_set_hl
+    hl(0, "DiagnosticError",          { fg = "#ff6c6b" })
+    hl(0, "DiagnosticWarn",           { fg = "#ECBE7B" })
+    hl(0, "DiagnosticInfo",           { fg = "#51afef" })
+    hl(0, "DiagnosticHint",           { fg = "#98be65" })
+    hl(0, "DiagnosticUnderlineError", { undercurl = true })
+    hl(0, "DiagnosticUnderlineWarn",  { undercurl = true })
+    hl(0, "DiagnosticUnderlineInfo",  { undercurl = true })
+    hl(0, "DiagnosticUnderlineHint",  { undercurl = true })
   end,
 })
 
--- Theme
-vim.cmd.colorscheme("unokai")
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
+-- Highlight yanked text briefly
+autocmd("TextYankPost", {
+  group    = augroup("YankHighlight", { clear = true }),
+  callback = function()
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+  end,
+})
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*",
-  callback = function(args)
-
-    local filetype = vim.bo[args.buf].filetype
-
-    -- remove trailing whitespace
-    local save = vim.fn.getpos(".")
-    vim.cmd([[%s/\s\+$//e]])
-    vim.fn.setpos(".", save)
-
-    -- Python → Ruff
-    if filetype == "python" then
-      vim.cmd("silent !ruff format %")
-      vim.cmd("edit")
-      return
+-- Auto-reload files changed outside Neovim
+autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+  group    = augroup("AutoRead", { clear = true }),
+  callback = function()
+    if vim.fn.getcmdwintype() == "" then
+      vim.cmd("checktime")
     end
+  end,
+})
 
-    -- Other languages → LSP
+-- Restore cursor position on file open
+autocmd("BufReadPost", {
+  group    = augroup("RestoreCursor", { clear = true }),
+  callback = function(args)
+    local mark       = vim.api.nvim_buf_get_mark(args.buf, '"')
+    local line_count = vim.api.nvim_buf_line_count(args.buf)
+    if mark[1] > 0 and mark[1] <= line_count then
+      vim.api.nvim_win_set_cursor(0, mark)
+    end
+  end,
+})
+
+-- BufWritePre: trim whitespace + LSP format (uniform for all filetypes)
+autocmd("BufWritePre", {
+  group    = augroup("FormatOnSave", { clear = true }),
+  pattern  = "*",
+  callback = function(args)
+    -- Trim trailing whitespace
+    local pos = vim.fn.getpos(".")
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.setpos(".", pos)
+
     vim.lsp.buf.format({
-      async = false,
+      async      = false,
       timeout_ms = 2000,
+      bufnr      = args.buf,
     })
   end,
 })
+
+-- ─────────────────────────────────────────────────────────────
+-- Colorscheme
+-- ─────────────────────────────────────────────────────────────
+vim.cmd.colorscheme("unokai")
+
+local hl = vim.api.nvim_set_hl
+hl(0, "Normal",      { bg = "none" })
+hl(0, "NormalNC",    { bg = "none" })
+hl(0, "EndOfBuffer", { bg = "none" })

@@ -27,7 +27,10 @@
         nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          specialArgs = {inherit inputs self;};
+          specialArgs = {
+            inherit inputs self;
+            overlays = [self.overlays.default];
+          };
 
           modules = [
             ./hosts/laptop

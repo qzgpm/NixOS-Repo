@@ -4,7 +4,6 @@
     # 🧠 Core System & Shell Tools
     # ────────────────────────────────
     neovim
-    git
     wget
     bc
     file
@@ -14,7 +13,6 @@
     bat
     dust
     tealdeer
-    zsh-fast-syntax-highlighting
     unclutter
 
     # ────────────────────────────────

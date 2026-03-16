@@ -1,12 +1,10 @@
-{...}: {
+{overlays, ...}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/system
   ];
 
-  nixpkgs.overlays = [
-    (import ../../overlays)
-  ];
+  nixpkgs.overlays = overlays;
 
   system.stateVersion = "25.05";
 }

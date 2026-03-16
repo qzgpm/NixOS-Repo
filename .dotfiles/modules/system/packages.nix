@@ -19,5 +19,7 @@
     unzip
     p7zip
     unar
+
+    nh # Nix Helper
   ];
 }
