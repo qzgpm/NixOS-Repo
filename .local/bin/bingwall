@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+set -eu
+
+BING="https://www.bing.com"
+RES="1920x1080"
+SAVE_DIR="${1:-$HOME/Pictures/Wallpapers}"
+
+mkdir -p "$SAVE_DIR"
+
+json=$(curl -sf "${BING}/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US")
+
+url=$(printf '%s' "$json" \
+  | rg -oP '"url":"\K[^"]+' \
+  | sed -E "s/[0-9]+x[0-9]+/${RES}/")
+
+title=$(printf '%s' "$json" \
+  | rg -oP '"title":"\K[^"]+' \
+  | tr -cs '[:alnum:]' '_' \
+  | sed 's/_*$//')
+
+filename="${SAVE_DIR}/${title:-bing_wallpaper}.jpg"
+
+# Skip if already downloaded
+[ -f "$filename" ] && echo "Already exists: $filename" && exit 0
+
+curl -sf -o "$filename" "${BING}${url}"
+
+nsxiv "$filename"
+printf "Keep wallpaper? [y/N]: "
+read -r ans
+
+case "$ans" in
+  y|Y|yes|YES)
+    echo "Saved: $filename"
+    ;;
+  *)
+    rm -f "$filename"
+    echo "Deleted."
+    ;;
+esac
