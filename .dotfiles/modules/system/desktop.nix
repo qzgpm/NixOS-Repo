@@ -5,11 +5,8 @@
     displayManager.startx.enable = true;
 
     displayManager.sessionCommands = ''
-      if [ -f $HOME/.config/x11/xinitrc ]; then
-        . $HOME/.config/x11/xinitrc
-      elif [ -f $HOME/.xinitrc ]; then
-        . $HOME/.xinitrc
-      fi
+      [ -f $HOME/.config/x11/xprofile ] && \
+        . $HOME/.config/x11/xprofile
     '';
   };
 

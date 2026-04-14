@@ -12,7 +12,7 @@
     extraRules = [
       {
         users = ["dlvn"];
-        keepEnv = true;
+        keepEnv = false;
         persist = true;
       }
     ];

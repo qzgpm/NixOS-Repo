@@ -93,6 +93,7 @@
     clang-tools
     nixd
     alejandra
+    nodejs
     steam-run
   ];
 }
