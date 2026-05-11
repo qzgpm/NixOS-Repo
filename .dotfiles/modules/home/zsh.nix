@@ -35,7 +35,7 @@
       df = "df -h | bat -p -l conf";
       python = "python -q";
       less = "bat --paging=always --plain";
-      rsync = "rsync -avh --progress --partial";
+      rsync = "rsync -avhP";
       diff = "diff --color=auto";
       ip = "ip -color=auto";
       lsblk = "lsblk|bat -p -l conf";

@@ -4,6 +4,7 @@
     ./fastfetch.nix
     ./fonts.nix
     ./mpv.nix
+    ./neovim.nix
     ./nsxiv.nix
     ./mpd.nix
     ./packages.nix

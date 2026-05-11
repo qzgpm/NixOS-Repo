@@ -3,7 +3,6 @@
     # ────────────────────────────────
     # 🧠 Core System & Shell Tools
     # ────────────────────────────────
-    neovim
     wget
     bc
     file
@@ -68,7 +67,6 @@
     # 🌐 Browsing & Communication
     # ────────────────────────────────
     librewolf
-    #qutebrowser
     tor-browser
     thunderbird
 
@@ -77,6 +75,7 @@
     # ────────────────────────────────
     qbittorrent
     nicotine-plus
+    localsend
 
     # ────────────────────────────────
     # 📊 System Info & Monitoring
@@ -87,6 +86,7 @@
     # ────────────────────────────────
     # 🎮 Misc / Legacy Tools
     # ────────────────────────────────
+    gcc
     python3
     pyright
     ruff
