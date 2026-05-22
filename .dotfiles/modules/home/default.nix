@@ -4,8 +4,8 @@
     ./fastfetch.nix
     ./fonts.nix
     ./mpv.nix
-    ./neovim.nix
     ./nsxiv.nix
+    ./nvim.nix
     ./mpd.nix
     ./packages.nix
     ./zsh.nix

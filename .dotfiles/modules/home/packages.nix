@@ -88,11 +88,6 @@
     # ────────────────────────────────
     gcc
     python3
-    pyright
-    ruff
-    clang-tools
-    nixd
-    alejandra
     nodejs
     steam-run
   ];

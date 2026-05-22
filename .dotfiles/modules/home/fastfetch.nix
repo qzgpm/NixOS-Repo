@@ -37,7 +37,7 @@
         {
           "type" = "packages";
           "key" = "{#separator}│  {#keys}󰏖 Packages";
-          "format" = "{all}";
+          "format" = "{nix-system} system + {nix-user} user";
         }
         {
           "type" = "custom";
