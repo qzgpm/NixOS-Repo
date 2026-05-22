@@ -4,7 +4,6 @@
     ./boot.nix
     ./databases.nix
     ./desktop.nix
-    ./extras.nix
     ./firewall.nix
     ./fonts.nix
     ./networking.nix
@@ -14,7 +13,6 @@
     ./power.nix
     ./programs.nix
     ./security.nix
-    ./timezone.nix
     ./users.nix
   ];
 }

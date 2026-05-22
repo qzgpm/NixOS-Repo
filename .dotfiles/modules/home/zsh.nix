@@ -52,9 +52,9 @@
       startx = "[ -n \"$XINITRC\" ] && [ -f \"$XINITRC\" ] && startx \"$XINITRC\"";
       movie = "fd -tf -E \"*.srt\" -p Films | fzf | xargs -r -I {} mpv {}";
 
-      # Config shortcuts
-      cfz = "$EDITOR /home/dlvn/Documents/NixOS-Repo/.dotfiles/modules/home/zsh.nix";
-      cfn = "$EDITOR /home/dlvn/Documents/NixOS-Repo/.dotfiles/modules/system/default.nix";
+      # Config shortcuts (uses NH_FLAKE env var)
+      cfz = "$EDITOR $NH_FLAKE/modules/home/zsh.nix";
+      cfn = "$EDITOR $NH_FLAKE/modules/system/default.nix";
     };
 
     initContent = ''
@@ -80,10 +80,10 @@
       source <(fzf --zsh)
 
       # ==============================
-      # Sudo shortcuts
+      # Doas shortcuts for privileged commands
       # ==============================
       for cmd in mount umount sv updatedb su shutdown poweroff reboot; do
-        alias "$cmd"="sudo $cmd"
+        alias "$cmd"="doas $cmd"
       done
       unset cmd
 
@@ -109,41 +109,12 @@
     '';
 
     envExtra = ''
-      # Add all directories to ~/.local/bin to $PATH
-      export PATH="$PATH:$(find ~/.local/bin -type d | paste -sd ':' -)"
-
-      # Disable Prompt
+      # Disable prompt spacing artifact
       unsetopt PROMPT_SP 2>/dev/null
 
-      # Default programs
-      export EDITOR="nvim"
-      export TERMINAL="st"
-      export TERMINAL_PROG="st"
-      export BROWSER="librewolf"
-
-      # Home cleanup
-      export XDG_CONFIG_HOME="$HOME/.config"
-      export XDG_DATA_HOME="$HOME/.local/share"
-      export XDG_CACHE_HOME="$HOME/.cache"
-      export XDG_DOWNLOAD_DIR="$HOME/Downloads"
-      export XDG_DOCUMENTS_DIR="$HOME/Documents"
-      export XDG_MEDIA_DIR="$HOME/Media"
-      export XDG_PICTURES_DIR="$HOME/Pictures"
-      export XINITRC="$XDG_CONFIG_HOME/x11/xinitrc"
-      export HISTFILE="$XDG_DATA_HOME/history"
-
-      # FZF
-      export FZF_DEFAULT_COMMAND='fd --hidden --color=never --type f --exclude .git'
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-      # Failsafe for shortcut
+      # Failsafe for shortcut dirs
       [ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ] && setsid -f shortcuts >/dev/null 2>&1
 
-      # Start graphical server in tty if not already started
-      [ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx "$XINITRC"
-
-      # Switch escape and caps on initial startup
-      sudo -n loadkeys "$XDG_DATA_HOME/scripts/ttymaps.kmap" 2>/dev/null
     '';
 
     completionInit = ''

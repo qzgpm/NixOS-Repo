@@ -12,8 +12,8 @@
     bat
     dust
     tealdeer
-    unclutter
     ripgrep
+    tree
 
     # ────────────────────────────────
     # 🏗️ Suckless Ecosystem
@@ -36,12 +36,11 @@
     # 🖼️ Visuals & Appearance
     # ────────────────────────────────
     pywal # colorscheme generator
-    feh # wallpaper + image viewer
+    feh # wallpaper setter
     nsxiv # minimalist image viewer
     scrot # screenshots
     xclip # clipboard
-    dunst # notifications
-    libnotify
+    libnotify # notify-send cli
 
     # ────────────────────────────────
     # 📂 File Management (lf setup)
@@ -62,6 +61,11 @@
     # 🎵 Multimedia & Audio
     # ────────────────────────────────
     mpc
+    wireplumber # for wpctl
+    pulsemixer
+    calcurse
+    procps # for pkill
+    acpilight # for xbacklight
 
     # ────────────────────────────────
     # 🌐 Browsing & Communication
@@ -81,7 +85,6 @@
     # 📊 System Info & Monitoring
     # ────────────────────────────────
     btop
-    fastfetch
 
     # ────────────────────────────────
     # 🎮 Misc / Legacy Tools

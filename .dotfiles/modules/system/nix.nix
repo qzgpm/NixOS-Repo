@@ -12,12 +12,16 @@
     flake-registry = ""; # Disable global registry for faster lookups
   };
 
+  environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d";
+    options = "--delete-older-than 30d";
     persistent = true;
   };
+
+  nix.channel.enable = false;
 
   nixpkgs.config.allowUnfree = true;
 }

@@ -1,13 +1,6 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in {
+{pkgs, ...}: {
   programs.nixvim = {
     enable = true;
-    package = unstable.neovim-unwrapped;
 
     # ── Global leaders ───────────────────────────────────────────────────────
     globals = {
@@ -400,28 +393,30 @@ in {
 
       treesitter-textobjects = {
         enable = true;
-        select = {
-          enable = true;
-          lookahead = true;
-          keymaps = {
-            "af" = "@function.outer";
-            "if" = "@function.inner";
-            "ac" = "@class.outer";
-            "ic" = "@class.inner";
-            "aa" = "@parameter.outer";
-            "ia" = "@parameter.inner";
+        settings = {
+          select = {
+            enable = true;
+            lookahead = true;
+            keymaps = {
+              "af" = "@function.outer";
+              "if" = "@function.inner";
+              "ac" = "@class.outer";
+              "ic" = "@class.inner";
+              "aa" = "@parameter.outer";
+              "ia" = "@parameter.inner";
+            };
           };
-        };
-        move = {
-          enable = true;
-          setJumps = true;
-          gotoNextStart = {
-            "]f" = "@function.outer";
-            "]c" = "@class.outer";
-          };
-          gotoPreviousStart = {
-            "[f" = "@function.outer";
-            "[c" = "@class.outer";
+          move = {
+            enable = true;
+            set_jumps = true;
+            goto_next_start = {
+              "]f" = "@function.outer";
+              "]c" = "@class.outer";
+            };
+            goto_previous_start = {
+              "[f" = "@function.outer";
+              "[c" = "@class.outer";
+            };
           };
         };
       };
@@ -500,9 +495,6 @@ in {
 
     # ── Extra Lua ─────────────────────────────────────────────────────────────
     extraConfigLua = ''
-      -- ── Native LSP (0.11+/0.12) ─────────────────────────────────────────────
-      -- No nvim-lspconfig needed. vim.lsp.config() registers a server config;
-      -- vim.lsp.enable() activates it for the matching filetypes.
 
       -- Shared on_attach: keymaps + inlay hints
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -510,7 +502,6 @@ in {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           local bufnr  = args.buf
 
-          -- Let ruff handle formatting for Python; silence pyright's formatter
           if client.name == "pyright" then
             client.server_capabilities.documentFormattingProvider = false
           end
@@ -533,8 +524,6 @@ in {
         end,
       })
 
-      -- nvim-cmp needs the LSP capabilities advertised so servers send
-      -- completion items. Wire it up globally via vim.lsp.config("*", ...).
       vim.lsp.config("*", {
         capabilities = require("cmp_nvim_lsp").default_capabilities(),
       })
@@ -641,8 +630,6 @@ in {
         },
       })
 
-      -- Transparent background (applied once on startup; ColorScheme autocmd
-      -- above keeps it after theme reloads).
       do
         local hl = vim.api.nvim_set_hl
         hl(0, "Normal",      { bg = "none" })
