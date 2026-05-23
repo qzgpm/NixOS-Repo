@@ -19,8 +19,7 @@
 ## 📸 Preview
 
 <div align="center">
-<!-- <img src="./assets/screenshot.png" width="85%" alt="Desktop Preview" /> -->
-<i>[ screenshot goes here ]</i>
+<img src="./assets/screenshot.png" width="85%" alt="Desktop Preview" />
 </div>
 
 ---
