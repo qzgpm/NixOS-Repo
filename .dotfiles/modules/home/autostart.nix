@@ -33,7 +33,7 @@
     Service = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${pkgs.xorg.xrdb}/bin/xrdb -merge %h/.Xresources";
+      ExecStart = "${pkgs.xrdb}/bin/xrdb -merge %h/.Xresources";
     };
     Install.WantedBy = ["graphical-session.target"];
   };

@@ -6,7 +6,7 @@
         name = "Delvin";
         email = "dlvn3jai@gmail.com";
       };
-      init.defaultBranch = "main";
+      init.defaultBranch = "master";
     };
   };
 }

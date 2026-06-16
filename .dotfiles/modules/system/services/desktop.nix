@@ -6,10 +6,10 @@
     xkb.options = "caps:swapescape";
 
     # Wire DISPLAY/XAUTHORITY into the systemd user session and activate
-    displayManager.sessionCommands = ''
-      ${"/run/current-system/sw/bin/dbus-update-activation-environment"} --systemd DISPLAY XAUTHORITY
-      systemctl --user start --no-block graphical-session.target
-    '';
+    #displayManager.sessionCommands = ''
+    #  ${"/run/current-system/sw/bin/dbus-update-activation-environment"} --systemd DISPLAY XAUTHORITY
+    #  systemctl --user start --no-block graphical-session.target
+    #'';
   };
 
   # Use XKB settings for the virtual console (TTY)

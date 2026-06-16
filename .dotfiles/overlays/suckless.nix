@@ -1,5 +1,5 @@
 self: super: let
-  commonX11Deps = with super.xorg; [
+  commonX11Deps = with super; [
     libX11
     libXft
     libXinerama

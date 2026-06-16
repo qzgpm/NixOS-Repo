@@ -1,17 +1,16 @@
 {...}: {
   imports = [
     ./autostart.nix
-    ./dunst.nix
     ./fastfetch.nix
     ./fonts.nix
+    ./git.nix
+    ./mpd.nix
     ./mpv.nix
     ./nsxiv.nix
     ./nvim.nix
-    ./mpd.nix
     ./packages.nix
     ./scripts.nix
     ./zsh.nix
-    ./git.nix
   ];
 
   home.sessionVariables = {

@@ -45,22 +45,23 @@
     # ────────────────────────────────
     # 📂 File Management (lf setup)
     # ────────────────────────────────
-    lf
+    yazi
     ueberzugpp # image previews
     poppler # PDF previews
     mediainfo # media metadata
-    gnome-epub-thumbnailer # epub thumbnails
 
     # ────────────────────────────────
     # 📄 Documents & Spreadsheets
     # ────────────────────────────────
     zathura # PDF/document viewer
     sc-im # terminal spreadsheet
+    obsidian
 
     # ────────────────────────────────
     # 🎵 Multimedia & Audio
     # ────────────────────────────────
     mpc
+    ncmpcpp
     wireplumber # for wpctl
     pulsemixer
     calcurse
@@ -87,8 +88,17 @@
     btop
 
     # ────────────────────────────────
+    # 📦 Archiving & Compression
+    # ────────────────────────────────
+    zip
+    unzip
+    p7zip
+    unar
+
+    # ────────────────────────────────
     # 🎮 Misc / Legacy Tools
     # ────────────────────────────────
+    nh # Nix Helper
     gcc
     python3
     nodejs

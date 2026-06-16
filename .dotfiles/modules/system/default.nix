@@ -1,18 +1,6 @@
 {...}: {
   imports = [
-    ./audio.nix
-    ./boot.nix
-    ./databases.nix
-    ./desktop.nix
-    ./firewall.nix
-    ./fonts.nix
-    ./networking.nix
-    ./nix.nix
-    ./packages.nix
-    ./picom.nix
-    ./power.nix
-    ./programs.nix
-    ./security.nix
-    ./users.nix
+    ./core
+    ./services
   ];
 }

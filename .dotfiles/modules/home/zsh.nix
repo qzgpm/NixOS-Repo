@@ -41,20 +41,15 @@
       lsblk = "lsblk|bat -p -l conf";
 
       # Nix
-      nr = "nh os switch";
-      nu = "nh os switch --update";
-      nc = "nh clean all";
+      nr = "nh os switch ";
+      nu = "nh os switch --update ";
+      nc = "nh clean all ";
 
       # Misc
-      lf = "lfub";
-      magit = "nvim -c MagitOnly";
+      yz = "yazi";
       xclip = "xclip -selection clipboard";
       startx = "[ -n \"$XINITRC\" ] && [ -f \"$XINITRC\" ] && startx \"$XINITRC\"";
       movie = "fd -tf -E \"*.srt\" -p Films | fzf | xargs -r -I {} mpv {}";
-
-      # Config shortcuts (uses NH_FLAKE env var)
-      cfz = "$EDITOR $NH_FLAKE/modules/home/zsh.nix";
-      cfn = "$EDITOR $NH_FLAKE/modules/system/default.nix";
     };
 
     initContent = ''

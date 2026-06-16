@@ -20,6 +20,4 @@
       }
     '';
   };
-
-  programs.ncmpcpp.enable = true;
 }

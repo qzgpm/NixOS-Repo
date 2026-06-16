@@ -13,7 +13,6 @@
       "glx-copy-from-front" = false;
       "use-damage" = true;
       "glx-use-gpushader" = true;
-      "refresh-rate" = 0;
 
       #####################
       ### Performance ###
