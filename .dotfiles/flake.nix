@@ -56,6 +56,7 @@
             ./hosts/laptop
             inputs.disko.nixosModules.disko
             inputs.preservation.nixosModules.preservation
+            inputs.sops-nix.nixosModules.sops
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;

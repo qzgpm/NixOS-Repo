@@ -1,6 +1,9 @@
 {overlays, ...}: {
   imports = [
     ./hardware-configuration.nix
+    ./disko.nix
+    ./preservation.nix
+    ./impermanence.nix
     ../../modules/system
   ];
 
