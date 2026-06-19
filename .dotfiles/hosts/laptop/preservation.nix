@@ -3,6 +3,7 @@
     files = [
       "/etc/machine-id"
       "/etc/shadow" # Preserve user password hashes across reboots
+      "/etc/adjtime"
       "/etc/ssh/ssh_host_ed25519_key"
       "/etc/ssh/ssh_host_ed25519_key.pub"
       "/etc/ssh/ssh_host_rsa_key"
@@ -11,9 +12,8 @@
 
     directories = [
       "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
       "/root"
-      "/home/dlvn/.ssh"
     ];
   };
 }
-
