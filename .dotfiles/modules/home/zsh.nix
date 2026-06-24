@@ -22,6 +22,7 @@
 
       # Common (Verbosity & Colors)
       ls = "eza -h --icons --group-directories-first --color=always";
+      tree = "eza --tree";
       grep = "rg --smart-case";
       cat = "bat -pp";
       cp = "cp -iv";

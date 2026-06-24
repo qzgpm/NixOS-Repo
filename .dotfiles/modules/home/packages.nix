@@ -13,7 +13,6 @@
     dust
     tealdeer
     ripgrep
-    tree
 
     # ────────────────────────────────
     # 🏗️ Suckless Ecosystem

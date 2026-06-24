@@ -1,143 +1,84 @@
-{pkgs, ...}: let
-  lock = v: {
-    Value = v;
-    Status = "locked";
-  };
-in {
+{config, ...}: {
   programs.firefox = {
     enable = true;
-    languagePacks = ["en-US"];
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
+
+    profiles.default = {
+      isDefault = true;
+
+      settings = {
+        "browser.contentblocking.category" = "strict";
+
+        "privacy.trackingprotection.enabled" = true;
+        "privacy.trackingprotection.socialtracking.enabled" = true;
+        "privacy.trackingprotection.emailtracking.enabled" = true;
+
+        "privacy.query_stripping.enabled" = true;
+        "privacy.query_stripping.enabled.pbmode" = true;
+
+        "dom.security.https_only_mode" = true;
+
+        "privacy.resistFingerprinting" = true;
+        "privacy.resistFingerprinting.letterboxing" = true;
+
+        "toolkit.telemetry.enabled" = false;
+        "datareporting.healthreport.uploadEnabled" = false;
+        "datareporting.policy.dataSubmissionEnabled" = false;
+
+        "browser.ping-centre.telemetry" = false;
+        "browser.newtabpage.activity-stream.feeds.telemetry" = false;
+
+        "app.normandy.enabled" = false;
+        "app.shield.optoutstudies.enabled" = false;
+
+        "network.prefetch-next" = false;
+        "network.http.speculative-parallel-limit" = 0;
+
+        "browser.send_pings" = false;
+        "beacon.enabled" = false;
+
+        "network.captive-portal-service.enabled" = false;
+        "network.connectivity-service.enabled" = false;
+
+        "network.http.referer.XOriginPolicy" = 2;
+
+        "media.peerconnection.ice.no_host" = true;
+
+        "browser.urlbar.suggest.history" = false;
+        "browser.urlbar.suggest.openpage" = false;
+        "browser.urlbar.suggest.topsites" = false;
+        "browser.urlbar.suggest.engines" = false;
+
+        "browser.search.suggest.enabled" = false;
+        "browser.urlbar.suggest.searches" = false;
+
+        "browser.formfill.enable" = false;
+        "signon.rememberSignons" = false;
+
+        "network.cookie.cookieBehavior" = 4;
+
+        "privacy.sanitize.sanitizeOnShutdown" = true;
+
+        "privacy.clearOnShutdown.history" = true;
+        "privacy.clearOnShutdown.cache" = true;
+        "privacy.clearOnShutdown.cookies" = false;
+        "privacy.clearOnShutdown.offlineApps" = true;
+
+        "extensions.pocket.enabled" = false;
+        "identity.fxaccounts.enabled" = false;
+
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      };
+      userChrome = builtins.readFile ./userChrome.css;
+    };
 
     policies = {
-      /*
-      ─────────────────────────────
-      BASIC PRIVACY BASELINE
-      ─────────────────────────────
-      */
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
-      DisableFirefoxAccounts = true;
-      DisableAccounts = true;
-      DontCheckDefaultBrowser = true;
-
-      /*
-      ─────────────────────────────
-      PRIVACY PROTECTION (LIBREWOLF-LIKE)
-      ─────────────────────────────
-      */
-      EnableTrackingProtection = {
-        Value = true;
-        Locked = true;
-        Cryptomining = true;
-        Fingerprinting = true;
-      };
-
-      /*
-      ─────────────────────────────
-      CLEAN UI / NO BLOAT
-      ─────────────────────────────
-      */
       DisablePocket = true;
-      DisableFirefoxScreenshots = true;
-      OverrideFirstRunPage = "";
-      OverridePostUpdatePage = "";
 
-      DisplayBookmarksToolbar = "never";
-      DisplayMenuBar = "default-off";
-      SearchBar = "unified";
-
-      /*
-      ─────────────────────────────
-      EXTENSIONS (YOUR REAL STACK)
-      ─────────────────────────────
-      */
-      ExtensionSettings = {
-        "*" = {
-          installation_mode = "blocked";
-        };
-
-        # uBlock Origin (core)
-        "uBlock0@raymondhill.net" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-          installation_mode = "force_installed";
-        };
-
-        # Bitwarden
-        "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
-          installation_mode = "force_installed";
-        };
-
-        # ClearURLs
-        "{74145f27-f039-47ce-a470-a662b129930a}" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/clearurls/latest.xpi";
-          installation_mode = "force_installed";
-        };
-
-        # I still don't care about cookies
-        "jid1-KKzOGWgsW3Ao4Q@jetpack" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/istilldontcareaboutcookies/latest.xpi";
-          installation_mode = "force_installed";
-        };
-
-        # Tridactyl (your real config dependency)
-        "tridactyl.vim@cmcaine.co.uk" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/tridactyl-vim/latest.xpi";
-          installation_mode = "force_installed";
-        };
-      };
-
-      /*
-      ─────────────────────────────
-      PREFERENCES (MATCHING YOUR PREFS.JS BEHAVIOR)
-      ─────────────────────────────
-      */
-      Preferences = {
-        # Strict content blocking
-        "browser.contentblocking.category" = lock "strict";
-
-        # HTTPS-only
-        "dom.security.https_only_mode" = lock true;
-
-        # Tracking / fingerprinting hardening
-        "privacy.trackingprotection.enabled" = lock true;
-        "privacy.trackingprotection.socialtracking.enabled" = lock true;
-        "privacy.trackingprotection.fingerprinting.enabled" = lock true;
-
-        # Query stripping (you already use it)
-        "privacy.query_stripping.enabled" = lock true;
-        "privacy.query_stripping.enabled.pbmode" = lock true;
-
-        # Bounce tracking protection
-        "privacy.bounceTrackingProtection.mode" = lock 1;
-
-        # Reduce data leakage
-        "network.prefetch-next" = lock false;
-        "network.dns.disablePrefetch" = lock true;
-        "network.http.speculative-parallel-limit" = lock 0;
-
-        # URL bar privacy
-        "browser.search.suggest.enabled" = lock false;
-        "browser.search.suggest.enabled.private" = lock false;
-        "browser.urlbar.suggest.searches" = lock false;
-        "browser.urlbar.suggest.history" = lock false;
-        "browser.urlbar.suggest.topsites" = lock false;
-
-        # New tab cleanup
-        "browser.newtabpage.enabled" = lock false;
-        "browser.newtabpage.activity-stream.showSponsored" = lock false;
-        "browser.newtabpage.activity-stream.showSponsoredTopSites" = lock false;
-        "browser.newtabpage.activity-stream.feeds.snippets" = lock false;
-
-        # Pocket removal
-        "extensions.pocket.enabled" = lock false;
-
-        # Form history (you had similar behavior)
-        "browser.formfill.enable" = lock false;
-
-        # Safer defaults
-        "security.tls.enable_0rtt_data" = lock false;
-      };
+      PasswordManagerEnabled = false;
+      OfferToSaveLogins = false;
     };
   };
 }
