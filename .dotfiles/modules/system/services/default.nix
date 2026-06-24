@@ -1,10 +1,10 @@
 {...}: {
   imports = [
     ./audio.nix
-    ./databases.nix
+    #./databases.nix
     ./desktop.nix
     ./dunst.nix
-    ./ollama.nix
+    #./ollama.nix
     ./picom.nix
     ./power.nix
   ];

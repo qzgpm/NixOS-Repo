@@ -71,7 +71,6 @@
     # ────────────────────────────────
     # 🌐 Browsing & Communication
     # ────────────────────────────────
-    librewolf
     tor-browser
     thunderbird
 
@@ -101,7 +100,5 @@
     nh # Nix Helper
     gcc
     python3
-    nodejs
-    steam-run
   ];
 }

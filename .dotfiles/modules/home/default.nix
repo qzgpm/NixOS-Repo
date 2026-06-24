@@ -2,6 +2,7 @@
   imports = [
     ./autostart.nix
     ./fastfetch.nix
+    ./firefox
     ./fonts.nix
     ./git.nix
     ./mpd.nix
